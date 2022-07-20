@@ -1,8 +1,10 @@
 #include <RTKRoverManager.h>
 
+
 /********************************************************************************
 *                             WiFi
 * ******************************************************************************/
+#pragma region: WIFI
 
 void RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) {
   WiFi.mode(WIFI_STA);
@@ -10,7 +12,7 @@ void RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
     // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
     //        - display state
-    Serial.println("WiFi Failed! Reboot in 10 s as AP!");
+    Serial.println("WiFi failed! Reboot in 10 s!");
     delay(10000);
     ESP.restart();
   }
@@ -55,6 +57,8 @@ bool RTKRoverManager::savedNetworkAvailable(const String& ssid) {
   }
   return false;
 }
+
+#pragma endregion
 
 /********************************************************************************
 *                             Web server
