@@ -2,7 +2,7 @@
 #define TESTS_RTK_ROVER_MANAGER_H
 
 #include <AUnit.h>
-#include <RTKBaseManager.h>
+#include <RTKRoverManager.h>
 
 using namespace aunit;
 

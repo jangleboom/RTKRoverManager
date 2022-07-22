@@ -1,25 +1,24 @@
 #include <Arduino.h>
 #include <SPIFFS.h>
 #include <RTKRoverManager.h>
+#include <ManagerConfig.h>
 
 using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
 void setup() {
-  Serial.begin(115200);
-  // Initialize SPIFFS
-  #ifdef ESP32
-    if (!SPIFFS.begin(true)) {
-      Serial.println("An Error has occurred while mounting SPIFFS");
-      return;
-    }
-  #else
-    if (!SPIFFS.begin()) {
-      Serial.println("An Error has occurred while mounting SPIFFS");
-      return;
-    }
-  #endif
+    #ifdef DEBUGGING
+    Serial.begin(BAUD);
+    while (!Serial) {};
+    #endif
+
+  // Initialize SPIFFS, set true for formatting
+  bool format = false;
+  if (!RTKRoverManager::setupSPIFFS(format)) {
+    DEBUG_SERIAL.println(F("setupSPIFFS failed, freezing"));
+    while (true) {};
+  }
   
   WiFi.setHostname(DEVICE_NAME);
   // Check if we have credentials for a available network
@@ -37,5 +36,7 @@ void setup() {
 }
 
 void loop() {
-  
+  #ifdef DEBUGGING
+  aunit::TestRunner::run();
+  #endif
 }

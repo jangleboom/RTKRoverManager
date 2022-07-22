@@ -25,6 +25,7 @@
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
+#include <ManagerConfig.h>
 
 #ifdef ESP32
   #include <WiFi.h>
@@ -50,21 +51,16 @@ namespace RTKRoverManager {
   // Parameters for SPIFFS file management
   const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
   const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
-  const char PARAM_RTK_LOCATION_METHOD[] PROGMEM = "location_method";
-  const char PARAM_RTK_SURVEY_ENABLED[] PROGMEM = "survey_enabled";
-  const char PARAM_RTK_COORDS_ENABLED[] PROGMEM = "coords_enabled";
-  const char PARAM_RTK_LOCATION_SURVEY_ACCURACY[] PROGMEM = "survey_accuracy";
-  const char PARAM_RTK_LOCATION_LONGITUDE[] PROGMEM = "longitude";
-  const char PARAM_RTK_LOCATION_LATITUDE[] PROGMEM = "latitude";
-  const char PARAM_RTK_LOCATION_HEIGHT[] PROGMEM = "height";
+  const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
+  const char PARAM_RTK_CASTER_USER[] PROGMEM = "caster_user";
+  const char PARAM_RTK_MOINT_POINT[] PROGMEM = "mount_point";
+
   // Paths for SPIFFS file management
   const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
   const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
-  const char PATH_RTK_LOCATION_METHOD[] PROGMEM = "/location_method.txt";
-  const char PATH_RTK_LOCATION_SURVEY_ACCURACY[] PROGMEM = "/survey_accuracy.txt";
-  const char PATH_RTK_LOCATION_LONGITUDE[] PROGMEM = "/longitude.txt";
-  const char PATH_RTK_LOCATION_LATITUDE[] PROGMEM = "/latitude.txt";
-  const char PATH_RTK_LOCATION_HEIGHT[] PROGMEM = "/height.txt";
+  const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host";
+  const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user";
+  const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point";
 
   /*** Wifi ***/
 
@@ -141,7 +137,16 @@ namespace RTKRoverManager {
   void actionUpdateData(AsyncWebServerRequest *request);
 
 
-  /*** SPIFFS ***/
+ /*** SPIFFS ***/
+
+  /**
+   * @brief Just init SPIFFS for ESP32 or ESP8266
+   * 
+   * @param format  True if SPIFFS should formated at start
+   * @return true   If SPIFFS is successfully initialized
+   *         false  If SPIFFS init failed
+   */
+  bool setupSPIFFS(bool format);
 
   /**
    * @brief         Write data to SPIFFS

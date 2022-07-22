@@ -82,14 +82,14 @@ void RTKRoverManager::notFound(AsyncWebServerRequest *request) {
 }
 
 void RTKRoverManager::actionRebootESP32(AsyncWebServerRequest *request) {
-  Serial.println("ACTION 3!");
+  Serial.println("ACTION actionRebootESP32!");
   request->send_P(200, "text/html", REBOOT_HTML, RTKRoverManager::processor);
   delay(3000);
   ESP.restart();
 }
 
 void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request) {
-  Serial.println("ACTION 2!");
+  Serial.println("ACTION actionWipeData!");
   int params = request->params();
   Serial.printf("params: %d\n", params);
   for (int i = 0; i < params; i++) {
@@ -108,7 +108,7 @@ void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request) {
 }
 
 void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request) {
-  Serial.println("ACTION 1!");
+  Serial.println("ACTION actionUpdateData!");
 
   int params = request->params();
   for (int i = 0; i < params; i++) {
@@ -127,35 +127,24 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request) {
      } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_LOCATION_METHOD) == 0) {
+    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_HOST) == 0) {
       if (p->value().length() > 0) {
-        writeFile(SPIFFS, PATH_RTK_LOCATION_METHOD, p->value().c_str());
+        writeFile(SPIFFS, PATH_RTK_CASTER_HOST, p->value().c_str());
      } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_LOCATION_SURVEY_ACCURACY) == 0) {
+    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_USER) == 0) {
       if (p->value().length() > 0) {
-        writeFile(SPIFFS, PATH_RTK_LOCATION_SURVEY_ACCURACY, p->value().c_str());
+        writeFile(SPIFFS, PATH_RTK_CASTER_USER, p->value().c_str());
      } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_LOCATION_LATITUDE) == 0) {
+    if (strcmp(p->name().c_str(), PARAM_RTK_MOINT_POINT) == 0) {
       if (p->value().length() > 0) {
-        writeFile(SPIFFS, PATH_RTK_LOCATION_LATITUDE, p->value().c_str());
+        writeFile(SPIFFS, PATH_RTK_MOINT_POINT, p->value().c_str());
      } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_LOCATION_LONGITUDE) == 0) {
-      if (p->value().length() > 0) {
-        writeFile(SPIFFS, PATH_RTK_LOCATION_LONGITUDE, p->value().c_str());
-     } 
-    }
-
-    if (strcmp(p->name().c_str(), PARAM_RTK_LOCATION_HEIGHT) == 0) {
-      if (p->value().length() > 0) {
-        writeFile(SPIFFS, PATH_RTK_LOCATION_HEIGHT, p->value().c_str());
-     } 
-    }
 
   }
   Serial.println(F("Data saved to SPIFFS!"));
@@ -172,26 +161,22 @@ String RTKRoverManager::processor(const String& var) {
     String savedPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
-  else if (var == PARAM_RTK_LOCATION_METHOD) {
-    String savedLocationMethod = readFile(SPIFFS, PATH_RTK_LOCATION_METHOD);
-    return (savedLocationMethod.isEmpty() ? String(PARAM_RTK_SURVEY_ENABLED) : savedLocationMethod);
+
+  else if (var == PARAM_RTK_CASTER_HOST) {
+    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_HOST);
+    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
   }
-  else if (var == PARAM_RTK_LOCATION_SURVEY_ACCURACY) {
-    String savedSurveyAccuracy = readFile(SPIFFS, PATH_RTK_LOCATION_SURVEY_ACCURACY);
-    return (savedSurveyAccuracy.isEmpty() ? String(PARAM_RTK_LOCATION_SURVEY_ACCURACY) : savedSurveyAccuracy);
+
+  else if (var == PARAM_RTK_CASTER_USER) {
+    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_USER);
+    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_USER) : savedCaster);
   }
-  else if (var == PARAM_RTK_LOCATION_LATITUDE) {
-    String savedLatitude = readFile(SPIFFS, PATH_RTK_LOCATION_LATITUDE);
-    return (savedLatitude.isEmpty() ? String(PARAM_RTK_LOCATION_LATITUDE) : savedLatitude);
+
+  else if (var == PARAM_RTK_MOINT_POINT) {
+    String savedCaster = readFile(SPIFFS, PATH_RTK_MOINT_POINT);
+    return (savedCaster.isEmpty() ? String(PARAM_RTK_MOINT_POINT) : savedCaster);
   }
-  else if (var == PARAM_RTK_LOCATION_LONGITUDE) {
-    String savedLongitude = readFile(SPIFFS, PATH_RTK_LOCATION_LONGITUDE);
-    return (savedLongitude.isEmpty() ? String(PARAM_RTK_LOCATION_LONGITUDE) : savedLongitude);
-  }
-  else if (var == PARAM_RTK_LOCATION_HEIGHT) {
-    String savedHeight = readFile(SPIFFS, PATH_RTK_LOCATION_HEIGHT);
-    return (savedHeight.isEmpty() ? String(PARAM_RTK_LOCATION_HEIGHT) : savedHeight);
-  }
+ 
   else if (var == "next_addr") {
     String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
     String savedPW = readFile(SPIFFS, PATH_WIFI_PASSWORD);
@@ -213,6 +198,31 @@ String RTKRoverManager::processor(const String& var) {
 /********************************************************************************
 *                             SPIFFS
 * ******************************************************************************/
+
+bool RTKRoverManager::setupSPIFFS(bool format) {
+  bool success = true;
+
+  #ifdef ESP32
+    if (!SPIFFS.begin(true)) {
+      DEBUG_SERIAL.println("An Error has occurred while mounting SPIFFS");
+      success = false;
+      return success;
+    }
+  #else
+    if (!SPIFFS.begin()) {
+      DEBUG_SERIAL.println("An Error has occurred while mounting SPIFFS");
+      success = false;
+      return success;
+    }
+  #endif
+  
+  if (format) {
+    DEBUG_SERIAL.println(F("formatting SPIFFS, ..."));
+    success &= SPIFFS.format();
+  }
+
+  return success;
+}
 
 String RTKRoverManager::readFile(fs::FS &fs, const char* path) {
   Serial.printf("Reading file: %s\r\n", path);
