@@ -1,10 +1,10 @@
 /**
  * @file    RTKRoverManager.h
  * @author  jangleboom
- * @link    https://github.com/audio-communication-group/rwaht_esp_wifi_manager
+ * @link    https://github.com/audio-communication-group/RTKRoverManager.git
  * <br>
  * @brief   This is part of a distributed software, here: the web interface to config 
- *          the realtime kinematics base station
+ *          the realtime kinematics rover
  * <br>
  * @todo    - a simular version for the head tracker
  *          - a check for special characters in the form
@@ -65,7 +65,7 @@ namespace RTKRoverManager {
   /*** Wifi ***/
 
   /**
-   * @brief Setup RTK base station in station mode to enter further settings
+   * @brief Setup RTK rover station in station mode to enter further settings
    * 
    * @param ssid        SSID of the local network
    * @param password    Password of the local network
@@ -74,7 +74,7 @@ namespace RTKRoverManager {
   void setupStationMode(const char* ssid, const char* password, const char* deviceName);
 
   /**
-   * @brief Setup RTK base station in access point mode to enter local network
+   * @brief Setup RTK rover station in access point mode to enter local network
    *        credentials and other settings
    * 
    * @param apSsid      SSID of the access point

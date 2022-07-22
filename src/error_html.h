@@ -8,7 +8,7 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>RTK base setup</title>
+    <title>RTK rover setup</title>
     <style>
         body {
             background-color: #4180C8;
@@ -49,7 +49,7 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 
 
 <body>
-    <h2>RTK Base Station</h2>
+    <h2>RTK Rover</h2>
     <p>an error occured - reload form</p>
     <span id="countdown">in 3 second(s)</span> <br>
     <progress value="0" max="3" id="progressBar"> </progress>

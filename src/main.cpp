@@ -3,6 +3,11 @@
 #include <RTKRoverManager.h>
 #include <ManagerConfig.h>
 
+#ifdef DEBUGGING
+#include <TestsRTKRoverManager.h>
+#endif
+
+
 using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];

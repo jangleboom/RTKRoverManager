@@ -9,7 +9,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>RTK base setup</title>
+    <title>RTK rover setup</title>
     <style>
         body {
             background-color: #4180C8;
@@ -51,7 +51,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
 </head>
 
 <body>
-    <h2>RTK Base Station</h2>
+    <h2>RTK Rover Station</h2>
     <h3>restart device</h3>
 
     <span id="countdown">in 5 second(s)</span> <br>
