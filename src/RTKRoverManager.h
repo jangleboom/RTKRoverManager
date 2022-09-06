@@ -52,6 +52,7 @@ namespace RTKRoverManager {
   const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
   const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
   const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
+  const char PARAM_RTK_CASTER_PORT[] PROGMEM = "caster_port";
   const char PARAM_RTK_CASTER_USER[] PROGMEM = "caster_user";
   const char PARAM_RTK_MOINT_POINT[] PROGMEM = "mount_point";
 
@@ -59,6 +60,7 @@ namespace RTKRoverManager {
   const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
   const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
   const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host";
+  const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port";
   const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user";
   const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point";
 
