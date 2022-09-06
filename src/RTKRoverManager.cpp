@@ -144,6 +144,12 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request) {
      } 
     }
 
+    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_PORT) == 0) {
+      if (p->value().length() > 0) {
+        writeFile(SPIFFS, PATH_RTK_CASTER_PORT, p->value().c_str());
+     } 
+    }
+
     if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_USER) == 0) {
       if (p->value().length() > 0) {
         writeFile(SPIFFS, PATH_RTK_CASTER_USER, p->value().c_str());
@@ -176,6 +182,11 @@ String RTKRoverManager::processor(const String& var) {
   else if (var == PARAM_RTK_CASTER_HOST) {
     String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_HOST);
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
+  }
+
+  else if (var == PARAM_RTK_CASTER_PORT) {
+    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_PORT);
+    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_PORT) : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_USER) {
