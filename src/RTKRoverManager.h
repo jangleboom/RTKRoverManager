@@ -83,6 +83,14 @@ namespace RTKRoverManager {
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
+   * @brief Recennect to the last AP, if reachable
+   * 
+   * @return true If WiFi connection established
+   * @return false If WiFi connection fails
+   */
+  bool checkConnectionToWifiStation(void);
+
+  /**
    * @brief Check possibility of connecting with an availbale network.
    * 
    * @param ssid        SSID of saved network in SPIFFS

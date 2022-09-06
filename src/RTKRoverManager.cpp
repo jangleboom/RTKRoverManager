@@ -30,6 +30,17 @@ void RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   Serial.println(WiFi.localIP());
 }
 
+bool RTKRoverManager::checkConnectionToWifiStation() {
+  if (WiFi.status() != WL_CONNECTED) {
+    DEBUG_SERIAL.println("Reconnecting to WiFi...");
+    WiFi.disconnect();
+    return WiFi.reconnect();
+  } else {
+    DEBUG_SERIAL.println("WiFi connected.");
+    return true;
+  }
+}
+
 void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) {
     Serial.print("Setting soft-AP ... ");
     WiFi.mode(WIFI_AP);
