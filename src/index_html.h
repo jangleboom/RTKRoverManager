@@ -99,6 +99,13 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
                         </td>
 
                     </tr>
+                        <tr>
+                        <td style="text-align:left;">Caster port:</td>
+                        <td>
+                            <input class="text_field" form="Form1" type="text" maxlength="30" name="caster_port" placeholder=%caster_port% style="text-align:center;">
+                        </td>
+
+                    </tr>
                     <tr>
                         <td style="text-align:left;">Caster user:</td>
                         <td>
