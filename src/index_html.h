@@ -10,7 +10,8 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
     <title>RTK rover setup</title>
     <style>
-        body {
+        body 
+        {
             background-color: #4180C8;
             font-family: Lato, Helvetica, Roboto, sans-serif;
             color: GhostWhite;
@@ -18,12 +19,14 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             border: 1em;
         }
 
-        .center {
+        .center 
+        {
             margin-left: auto;
             margin-right: auto;
         }
 
-        .button {
+        .button 
+        {
             background-color: #F0A03C;
             border: none;
             color: white;
@@ -34,7 +37,8 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             font-size: 13px;
         }
 
-        .text_field {
+        .text_field 
+        {
             border: none;
             color: black;
             text-align: center;
@@ -43,13 +47,15 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             font-size: 13px;
         }
 
-        ::placeholder {
+        ::placeholder 
+        {
             color: navy;
             opacity: 1;
             transition: opacity 1s;
         }
 
-        :focus::placeholder {
+        :focus::placeholder 
+        {
             opacity: 0
         }
     </style>
