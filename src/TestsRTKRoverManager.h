@@ -10,8 +10,14 @@ using namespace RTKRoverManager;
 test(processorWriteAndReadSpiffs) 
 {
     String testValue = "TestValue";
-    const char* PATH_TEST_VALUE = "/pathTestValue";
-    if (SPIFFS.exists(PATH_TEST_VALUE)) SPIFFS.remove(PATH_TEST_VALUE);
+    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValue";
+    if (SPIFFS.exists(PATH_TEST_VALUE)) 
+    {
+        if (!SPIFFS.remove(PATH_TEST_VALUE))
+        {
+            assert("Failed to remove SPIFFS path.");
+        }
+    }
     writeFile(SPIFFS, PATH_TEST_VALUE, testValue.c_str());
     delay(100);
     String savedValue = readFile(SPIFFS, PATH_TEST_VALUE);

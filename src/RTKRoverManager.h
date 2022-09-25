@@ -38,10 +38,11 @@
   #include <FS.h>
 #endif
 
-namespace RTKRoverManager {
-  // DEVICE_NAME can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
-  #ifndef DEVICE_NAME
-  #define DEVICE_NAME "rtkrover"
+namespace RTKRoverManager 
+{
+  // DEVICE_TYPE can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
+  #ifndef DEVICE_TYPE
+  #define DEVICE_TYPE "rtkrover"
   #endif
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
@@ -49,6 +50,7 @@ namespace RTKRoverManager {
   const char AP_PASSWORD[] PROGMEM = "12345678";
   const char IP_AP[] PROGMEM = "192.168.4.1";
   // Parameters for SPIFFS file management
+  #define FORMAT_SPIFFS_IF_FAILED true
   const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
   const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
   const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
@@ -63,9 +65,9 @@ namespace RTKRoverManager {
   const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port";
   const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user";
   const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point";
-
-  /*** Wifi ***/
-
+  
+  //===============================================================================
+  // Wifi
   /**
    * @brief Setup RTK rover station in station mode to enter further settings
    * 
@@ -101,8 +103,8 @@ namespace RTKRoverManager {
    */
   bool savedNetworkAvailable(const String& ssid);
 
-  /*** Web server ***/
-
+  //===============================================================================
+  // Web server
   /**
    * @brief         Start web server 
    * 
@@ -146,9 +148,8 @@ namespace RTKRoverManager {
    */
   void actionUpdateData(AsyncWebServerRequest *request);
 
-
- /*** SPIFFS ***/
-
+  //===============================================================================
+  // SPIFFS
   /**
    * @brief Just init SPIFFS for ESP32 or ESP8266
    * 
@@ -156,7 +157,7 @@ namespace RTKRoverManager {
    * @return true   If SPIFFS is successfully initialized
    *         false  If SPIFFS init failed
    */
-  bool setupSPIFFS(bool format);
+  bool setupSPIFFS(bool formatIfFailed);
 
   /**
    * @brief         Write data to SPIFFS
@@ -188,9 +189,6 @@ namespace RTKRoverManager {
    */
   void wipeSpiffsFiles(void);
 
-
 }
-
-
 
 #endif /*** RTK_ROVER_MANAGER_H ***/

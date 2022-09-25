@@ -15,8 +15,19 @@
 
 #define BAUD                          115200
 
-
-
+/**
+ * @brief Get the Chip Id (part of the MAC address)
+ * 
+ * @return uint32_t Chip Id
+ */
+uint32_t getChipId(void);
+/**
+ * @brief Get the unique Device Name 
+ * 
+ * @param prefix Device name e. g. rtkrover
+ * @return String Name + ID
+ */
+String getDeviceName(const String &prefix);
 
 #endif  /*** MANAGER_CONFIG_H ***/
 #endif

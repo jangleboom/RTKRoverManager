@@ -16,24 +16,25 @@ void RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   {
     // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
     //        - display state
-    Serial.println("WiFi failed! Reboot in 10 s!");
+    DEBUG_SERIAL.println("WiFi failed! Reboot in 10 s!");
     delay(10000);
     ESP.restart();
   }
-  Serial.println();
+  DEBUG_SERIAL.println();
 
-  if (!MDNS.begin(deviceName)) 
+  if (!MDNS.begin(getDeviceName(DEVICE_TYPE).c_str())) 
   {
-      Serial.println("Error starting mDNS, use local IP instead!");
-  } else 
+    DEBUG_SERIAL.println(F("Error starting mDNS, use local IP instead!"));
+  } 
+  else 
   {
-    Serial.printf("Starting mDNS, find me under <http://www.%s.local>\n", DEVICE_NAME);
+    DEBUG_SERIAL.printf("Starting mDNS, find me under <http://www.%s.local>\n", WiFi.getHostname());
   }
 
-  Serial.print("Wifi client started: ");
-  Serial.println(WiFi.getHostname());
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+  DEBUG_SERIAL.print(F("Wifi client started: "));
+  DEBUG_SERIAL.println(WiFi.getHostname());
+  DEBUG_SERIAL.print(F("IP Address: "));
+  DEBUG_SERIAL.println(WiFi.localIP());
 }
 
 bool RTKRoverManager::checkConnectionToWifiStation() 
@@ -44,14 +45,14 @@ bool RTKRoverManager::checkConnectionToWifiStation()
   {
     if (WiFi.status() != WL_CONNECTED) 
     {
-      DEBUG_SERIAL.println("Reconnecting to access point.");
-      DEBUG_SERIAL.print("SSID: ");
+      DEBUG_SERIAL.println(F("Reconnecting to access point."));
+      DEBUG_SERIAL.print(F("SSID: "));
       WiFi.disconnect();
       isConnectedToStation = WiFi.reconnect();
     } 
     else 
     {
-      DEBUG_SERIAL.println("WiFi connected.");
+      DEBUG_SERIAL.println(F("WiFi connected."));
       isConnectedToStation = true;
     }
   }
@@ -61,13 +62,13 @@ bool RTKRoverManager::checkConnectionToWifiStation()
 
 void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
-  Serial.print("Setting soft-AP ... ");
+  DEBUG_SERIAL.print("Setting soft-AP ... ");
   WiFi.mode(WIFI_AP);
-  Serial.println(WiFi.softAP(apSsid, apPassword) ? "Ready" : "Failed!");
-  Serial.print("Access point started: ");
-  Serial.println(AP_SSID);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.softAPIP());
+  DEBUG_SERIAL.println(WiFi.softAP(apSsid, apPassword) ? "Ready" : "Failed!");
+  DEBUG_SERIAL.print(F("Access point started: "));
+  DEBUG_SERIAL.println(apSsid);
+  DEBUG_SERIAL.print(F("IP address: "));
+  DEBUG_SERIAL.println(WiFi.softAPIP());
 }
 
 bool RTKRoverManager::savedNetworkAvailable(const String& ssid) 
@@ -75,16 +76,17 @@ bool RTKRoverManager::savedNetworkAvailable(const String& ssid)
   if (ssid.isEmpty()) return false;
 
   uint8_t nNetworks = (uint8_t) WiFi.scanNetworks();
-  Serial.print(nNetworks);  Serial.println(F(" networks found."));
-    for (uint8_t i=0; i<nNetworks; i++) 
-    {
+  DEBUG_SERIAL.print(nNetworks);  
+  DEBUG_SERIAL.println(F(" networks found."));
+  for (uint8_t i=0; i<nNetworks; i++) 
+  {
     if (ssid.equals(String(WiFi.SSID(i)))) 
     {
-      Serial.print(F("A known network with SSID found: ")); 
-      Serial.print(WiFi.SSID(i));
-      Serial.print(F(" (")); 
-      Serial.print(WiFi.RSSI(i)); 
-      Serial.println(F(" dB), connecting..."));
+      DEBUG_SERIAL.print(F("A known network with SSID found: ")); 
+      DEBUG_SERIAL.print(WiFi.SSID(i));
+      DEBUG_SERIAL.print(F(" (")); 
+      DEBUG_SERIAL.print(WiFi.RSSI(i)); 
+      DEBUG_SERIAL.println(F(" dB), connecting..."));
       return true;
     }
   }
@@ -120,7 +122,7 @@ void RTKRoverManager::notFound(AsyncWebServerRequest *request)
 
 void RTKRoverManager::actionRebootESP32(AsyncWebServerRequest *request) 
 {
-  Serial.println("ACTION actionRebootESP32!");
+  DEBUG_SERIAL.println("ACTION actionRebootESP32!");
   request->send_P(200, "text/html", REBOOT_HTML, RTKRoverManager::processor);
   delay(3000);
   ESP.restart();
@@ -128,36 +130,36 @@ void RTKRoverManager::actionRebootESP32(AsyncWebServerRequest *request)
 
 void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request) 
 {
-  Serial.println("ACTION actionWipeData!");
+  DEBUG_SERIAL.println("ACTION actionWipeData!");
   int params = request->params();
-  Serial.printf("params: %d\n", params);
+  DEBUG_SERIAL.printf("params: %d\n", params);
   for (int i = 0; i < params; i++) 
   {
     AsyncWebParameter* p = request->getParam(i);
-    Serial.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
+    DEBUG_SERIAL.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
     if (strcmp(p->name().c_str(), "wipe_button") == 0) 
     {
       if (p->value().length() > 0) 
       {
-        Serial.printf("wipe command received: %s",p->value().c_str());
+        DEBUG_SERIAL.printf("wipe command received: %s",p->value().c_str());
         wipeSpiffsFiles();
       } 
      }
     } 
 
-  Serial.print(F("Data in SPIFFS was wiped out!"));
+  DEBUG_SERIAL.print(F("Data in SPIFFS was wiped out!"));
   request->send_P(200, "text/html", INDEX_HTML, processor);
 }
 
 void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request) 
 {
-  Serial.println("ACTION actionUpdateData!");
+  DEBUG_SERIAL.println("ACTION actionUpdateData!");
 
   int params = request->params();
   for (int i = 0; i < params; i++) 
   {
     AsyncWebParameter* p = request->getParam(i);
-    Serial.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
+    DEBUG_SERIAL.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
 
     if (strcmp(p->name().c_str(), PARAM_WIFI_SSID) == 0) 
     {
@@ -209,7 +211,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
 
 
   }
-  Serial.println(F("Data saved to SPIFFS!"));
+  DEBUG_SERIAL.println(F("Data saved to SPIFFS!"));
   request->send_P(200, "text/html", INDEX_HTML, RTKRoverManager::processor);
 }
 
@@ -260,7 +262,7 @@ String RTKRoverManager::processor(const String& var)
       return String(IP_AP);
     } else 
     {
-      String clientAddr = String(DEVICE_NAME);
+      String clientAddr = getDeviceName(DEVICE_TYPE);
       clientAddr += ".local";
       return clientAddr;
     }
@@ -268,7 +270,7 @@ String RTKRoverManager::processor(const String& var)
   else if (var == "next_ssid") 
   {
     String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-    return (savedSSID.isEmpty() ? String(AP_SSID) : savedSSID);
+    return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
   return String();
 }
@@ -278,16 +280,15 @@ String RTKRoverManager::processor(const String& var)
                                 SPIFFS
 =================================================================================
 */
-bool RTKRoverManager::setupSPIFFS(bool format) 
+bool RTKRoverManager::setupSPIFFS(bool formatIfFailed) 
 {
-  bool success = true;
+  bool success = false;
 
   #ifdef ESP32
-    if (!SPIFFS.begin(true)) 
+    if (SPIFFS.begin(formatIfFailed)) 
     {
       DEBUG_SERIAL.println("An Error has occurred while mounting SPIFFS");
-      success = false;
-      return success;
+      success = true;
     }
   #else
     if (!SPIFFS.begin()) 
@@ -297,27 +298,21 @@ bool RTKRoverManager::setupSPIFFS(bool format)
       return success;
     }
   #endif
-  
-  if (format) 
-  {
-    DEBUG_SERIAL.println(F("formatting SPIFFS, ..."));
-    success &= SPIFFS.format();
-  }
 
   return success;
 }
 
 String RTKRoverManager::readFile(fs::FS &fs, const char* path) 
 {
-  Serial.printf("Reading file: %s\r\n", path);
+  DEBUG_SERIAL.printf("Reading file: %s\r\n", path);
   File file = fs.open(path, "r");
 
   if (!file || file.isDirectory()) 
   {
-    Serial.println("- empty file or failed to open file");
+    DEBUG_SERIAL.println("- empty file or failed to open file");
     return String();
   }
-  Serial.println("- read from file:");
+  DEBUG_SERIAL.println("- read from file:");
   String fileContent;
 
   while (file.available()) 
@@ -325,27 +320,27 @@ String RTKRoverManager::readFile(fs::FS &fs, const char* path)
     fileContent += String((char)file.read());
   }
   file.close();
-  Serial.println(fileContent);
+  DEBUG_SERIAL.println(fileContent);
 
   return fileContent;
 }
 
 void RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* message) 
 {
-  Serial.printf("Writing file: %s\r\n", path);
+  DEBUG_SERIAL.printf("Writing file: %s\r\n", path);
 
   File file = fs.open(path, "w");
   if (!file) 
   {
-    Serial.println("- failed to open file for writing");
+    DEBUG_SERIAL.println("- failed to open file for writing");
     return;
   }
   if (file.print(message)) 
   {
-    Serial.println("- file written");
+    DEBUG_SERIAL.println("- file written");
   } else 
   {
-    Serial.println("- write failed");
+    DEBUG_SERIAL.println("- write failed");
   }
   file.close();
 }
@@ -356,8 +351,8 @@ void RTKRoverManager::listFiles()
  
   while (file) 
   {
-      Serial.print("FILE: ");
-      Serial.println(file.name());
+      DEBUG_SERIAL.print("FILE: ");
+      DEBUG_SERIAL.println(file.name());
       file = root.openNextFile();
   }
   file.close();
@@ -369,12 +364,12 @@ void RTKRoverManager::wipeSpiffsFiles()
   File root = SPIFFS.open("/");
   File file = root.openNextFile();
 
-  Serial.println(F("Wiping: "));
+  DEBUG_SERIAL.println(F("Wiping: "));
 
   while (file) 
   {
-    Serial.print("FILE: ");
-    Serial.println(file.path());
+    DEBUG_SERIAL.print("FILE: ");
+    DEBUG_SERIAL.println(file.path());
     SPIFFS.remove(file.path());
     file = root.openNextFile();
   }

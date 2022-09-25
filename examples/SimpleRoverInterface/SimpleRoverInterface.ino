@@ -11,24 +11,27 @@
 using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
-
+/**
+ * @brief Setup WiFi: Access point on first run or if no credentials saved in SPIFFS,
+ *                    Station if it can connect to an AP successfully.
+ * 
+ */
 void setupWifi(void);
 
 void setup() 
 { //===============================================================================
-    #ifdef DEBUGGING
-    Serial.begin(BAUD);
-    while (!Serial) {};
-    #endif
+  #ifdef DEBUGGING
+  Serial.begin(BAUD);
+  while (!Serial) {};
+  DEBUG_SERIAL.println(F("Serial setup done."));
+  #endif
+
   //===============================================================================
   // Init file system
-  bool shouldFormat = false;
-  if (!setupSPIFFS(shouldFormat))
-  {
-    DEBUG_SERIAL.println(F("SPIFFS setup failed, Freezing..."));
-  }
-  while (true) {}; // Freezing
+  if (!setupSPIFFS(FORMAT_SPIFFS_IF_FAILED)) while (true) {}; // Freezing
+  
   //===============================================================================
+  
   setupWifi();
 }
 
@@ -37,25 +40,24 @@ void loop()
   #ifdef DEBUGGING
   aunit::TestRunner::run();
   #endif
-
-  checkConnectionToWifiStation();
-  delay(30000);
 }
 
 void setupWifi()
 {
-  WiFi.setHostname(DEVICE_NAME);
+  const char* deviceName = getDeviceName(DEVICE_TYPE).c_str();
+  WiFi.setHostname(deviceName);
+
   // Check if we have credentials for a available network
   String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
   String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
 
   if (!savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
   {
-    setupAPMode(AP_SSID, AP_PASSWORD);
+    setupAPMode(deviceName, AP_PASSWORD);
     delay(500);
   } else 
   {
-   setupStationMode(lastSSID.c_str(), lastPassword.c_str(), DEVICE_NAME);
+   setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
    delay(500);
   }
   startServer(&server);
