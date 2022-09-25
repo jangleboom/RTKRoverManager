@@ -35,11 +35,23 @@ void setup()
   setupWifi();
 }
 
+
+unsigned long previousMillis = 0;
+const unsigned long RECONNECT_INTERVAL = 30000;
+
 void loop() 
 {
   #ifdef DEBUGGING
   aunit::TestRunner::run();
   #endif
+
+  unsigned long currentMillis = millis();
+  // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
+  if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
+  {
+    RTKRoverManager::checkConnectionToWifiStation();
+    previousMillis = currentMillis;
+  }
 }
 
 void setupWifi()
