@@ -1,4 +1,4 @@
-#ifndef RTK_ROVER_STATION_CONFIG_H
+#ifndef RTK_ROVER_CONFIG_H
 #ifndef MANAGER_CONFIG_H
 #define MANAGER_CONFIG_H
 #include <Arduino.h>
