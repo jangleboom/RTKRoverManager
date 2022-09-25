@@ -49,4 +49,7 @@ void loop()
   #ifdef DEBUGGING
   aunit::TestRunner::run();
   #endif
+
+  checkConnectionToWifiStation();
+  delay(30000);
 }

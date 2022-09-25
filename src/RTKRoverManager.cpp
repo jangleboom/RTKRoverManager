@@ -37,18 +37,26 @@ void RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
 }
 
 bool RTKRoverManager::checkConnectionToWifiStation() 
-{
-  if (WiFi.status() != WL_CONNECTED) 
+{ 
+  bool isConnectedToStation = false;
+
+  if (WiFi.getMode() == WIFI_MODE_STA)
   {
-    DEBUG_SERIAL.println("Reconnecting to WiFi...");
-    WiFi.disconnect();
-    return WiFi.reconnect();
-  } 
-  else 
-  {
-    DEBUG_SERIAL.println("WiFi connected.");
-    return true;
+    if (WiFi.status() != WL_CONNECTED) 
+    {
+      DEBUG_SERIAL.println("Reconnecting to access point.");
+      DEBUG_SERIAL.print("SSID: ");
+      WiFi.disconnect();
+      isConnectedToStation = WiFi.reconnect();
+    } 
+    else 
+    {
+      DEBUG_SERIAL.println("WiFi connected.");
+      isConnectedToStation = true;
+    }
   }
+
+  return isConnectedToStation;
 }
 
 void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) 
