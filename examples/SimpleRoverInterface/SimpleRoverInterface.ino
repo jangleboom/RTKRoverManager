@@ -23,7 +23,7 @@ void setup()
   #ifdef DEBUGGING
   Serial.begin(BAUD);
   while (!Serial) {};
-  DEBUG_SERIAL.println(F("Serial setup done."));
+  DBG.println(F("Serial setup done."));
   #endif
 
   //===============================================================================

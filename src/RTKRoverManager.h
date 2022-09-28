@@ -42,11 +42,10 @@ namespace RTKRoverManager
 {
   // DEVICE_TYPE can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
   #ifndef DEVICE_TYPE
-  #define DEVICE_TYPE "rtkrover"
+  const char DEVICE_TYPE[] PROGMEM = "rtkrover";
   #endif
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-  const char AP_SSID[] PROGMEM = "RTK-Rover";
   const char AP_PASSWORD[] PROGMEM = "12345678";
   const char IP_AP[] PROGMEM = "192.168.4.1";
   // Parameters for SPIFFS file management
@@ -206,5 +205,4 @@ String getDeviceName(const String &prefix);
 uint32_t getChipId(void);
 
 }
-
 #endif /*** RTK_ROVER_MANAGER_H ***/

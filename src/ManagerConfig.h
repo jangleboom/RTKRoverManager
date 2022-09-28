@@ -3,7 +3,10 @@
 #define MANAGER_CONFIG_H
 #include <Arduino.h>
 
-// THIS WILL BE REPLACED BY THE RTKRoverConfig.h after merge
+/* 
+THIS WILL BE REPLACED BY THE RTKRoverConfig.h after including this project 
+as submodule into the RTKRover project under lib/
+*/
 
 /******************************************************************************/
 //                       Default Serial settings
