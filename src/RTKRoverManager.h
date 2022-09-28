@@ -86,6 +86,12 @@ namespace RTKRoverManager
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
+   * @brief Setup in WiFi or station mode, depending on stored data in SPIFFS
+   * 
+   */
+  void setupWifi(AsyncWebServer* server);
+
+  /**
    * @brief Recennect to the last AP, if reachable
    * 
    * @return true If WiFi connection established
