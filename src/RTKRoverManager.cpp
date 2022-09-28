@@ -308,7 +308,7 @@ bool RTKRoverManager::setupSPIFFS(bool formatIfFailed)
   #ifdef ESP32
     if (SPIFFS.begin(formatIfFailed)) 
     {
-      DBG.println("An Error has occurred while mounting SPIFFS");
+      DBG.println("SPIFFS file system successfully mounted");
       success = true;
     }
   #else
