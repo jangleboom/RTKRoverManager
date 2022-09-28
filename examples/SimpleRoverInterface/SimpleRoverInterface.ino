@@ -11,12 +11,6 @@
 using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
-/**
- * @brief Setup WiFi: Access point on first run or if no credentials saved in SPIFFS,
- *                    Station if it can connect to an AP successfully.
- * 
- */
-void setupWifi(void);
 
 void setup() 
 { //===============================================================================
@@ -32,7 +26,7 @@ void setup()
   
   //===============================================================================
   
-  setupWifi();
+  setupWifi(&server);
 }
 
 
@@ -52,25 +46,4 @@ void loop()
     RTKRoverManager::checkConnectionToWifiStation();
     previousMillis = currentMillis;
   }
-}
-
-void setupWifi()
-{
-  const char* deviceName = getDeviceName(DEVICE_TYPE).c_str();
-  WiFi.setHostname(deviceName);
-
-  // Check if we have credentials for a available network
-  String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-  String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
-
-  if (!savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
-  {
-    setupAPMode(deviceName, AP_PASSWORD);
-    delay(500);
-  } else 
-  {
-   setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
-   delay(500);
-  }
-  startServer(&server);
 }

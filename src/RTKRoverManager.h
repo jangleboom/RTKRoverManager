@@ -86,7 +86,8 @@ namespace RTKRoverManager
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
-   * @brief Setup in WiFi or station mode, depending on stored data in SPIFFS
+   * @brief Setup WiFi: Access point on first run or if no credentials saved in SPIFFS,
+   *                    Station if device can connect to an saved AP successfully.
    * 
    */
   void setupWifi(AsyncWebServer* server);
