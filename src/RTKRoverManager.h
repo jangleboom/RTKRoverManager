@@ -189,6 +189,22 @@ namespace RTKRoverManager
    */
   void wipeSpiffsFiles(void);
 
+/**
+ * @brief Get the unique Device Name 
+ * 
+ * @param prefix Device name e. g. rtkrover
+ * @return String Name + ID
+ */
+String getDeviceName(const String &prefix);
+
+
+/**
+ * @brief Get the Chip Id (part of the MAC address)
+ * 
+ * @return uint32_t Chip Id
+ */
+uint32_t getChipId(void);
+
 }
 
 #endif /*** RTK_ROVER_MANAGER_H ***/
