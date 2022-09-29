@@ -73,8 +73,7 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
 
 void RTKRoverManager::setupWifi(AsyncWebServer* server)
 {
-  const char* deviceName = getDeviceName(DEVICE_TYPE).c_str();
-  WiFi.setHostname(deviceName);
+  WiFi.setHostname(getDeviceName(DEVICE_TYPE).c_str());
 
   // Check if we have credentials for a available network
   String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
@@ -82,7 +81,7 @@ void RTKRoverManager::setupWifi(AsyncWebServer* server)
 
   if (!savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
   {
-    setupAPMode(deviceName, AP_PASSWORD);
+    setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
     delay(500);
   } else 
   {
