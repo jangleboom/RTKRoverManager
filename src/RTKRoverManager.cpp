@@ -77,6 +77,7 @@ void RTKRoverManager::setupWifi(AsyncWebServer* server)
   // Check if we have credentials for a available network
   String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
   String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+  DBG.printf("lastSSID: %s, lastPassword: %s\n", lastSSID, lastPassword);
 
   if (!savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
   {
