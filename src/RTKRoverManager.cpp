@@ -10,15 +10,16 @@
 
 void RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
+  static int rebootCnt = 1;
   WiFi.mode(WIFI_STA);
-  WiFi.begin( ssid, password);
+  WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) 
   {
-    // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
-    //        - display state
-    DBG.println("WiFi failed! Reboot in 10 s!");
+    DBG.println(F("WiFi connection in station mode failed!"));
+    DBG.print(rebootCnt);
+    DBG.println(F(". Reboot in 10 s! After 3 fails it boots in AP mode"));
     delay(10000);
-    ESP.restart();
+    (rebootCnt++ > 3) ? setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD) : ESP.restart();
   }
   DBG.println();
 
