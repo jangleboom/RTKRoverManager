@@ -11,6 +11,7 @@
 bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
+  WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) 
@@ -53,8 +54,6 @@ bool RTKRoverManager::checkConnectionToWifiStation()
     if (WiFi.status() != WL_CONNECTED) 
     {
       DBG.println(F("Reconnecting to access point."));
-      DBG.print(F("SSID: "));
-      WiFi.disconnect();
       isConnectedToStation = WiFi.reconnect();
     } 
     else 
@@ -70,8 +69,10 @@ bool RTKRoverManager::checkConnectionToWifiStation()
 void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
+  WiFi.disconnect();
   WiFi.mode(WIFI_AP);
-  DBG.println(WiFi.softAP(apSsid, apPassword) ? "Ready" : "Failed!");
+  bool result = WiFi.softAP(apSsid, apPassword);
+  DBG.println(result ? "Ready" : "Failed!");
   DBG.print(F("Access point started: "));
   DBG.println(apSsid);
   DBG.print(F("IP address: "));
