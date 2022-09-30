@@ -73,8 +73,9 @@ namespace RTKRoverManager
    * @param ssid        SSID of the local network
    * @param password    Password of the local network
    * @param deviceName  MDNS name, connect via http://<deviceName>.local
+   * @return bool       True if succeed, false if not
    */
-  void setupStationMode(const char* ssid, const char* password, const char* deviceName);
+  bool setupStationMode(const char* ssid, const char* password, const char* deviceName);
 
   /**
    * @brief Setup RTK rover station in access point mode to enter local network
@@ -92,7 +93,7 @@ namespace RTKRoverManager
    *        Station mode if the device can connect to an saved AP successfully.
    * 
    */
-  void setupWifi(AsyncWebServer* server);
+  void setupWiFi(AsyncWebServer* server);
 
   /**
    * @brief Recennect to the last AP, if reachable

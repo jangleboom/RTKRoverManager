@@ -8,32 +8,40 @@
 
 #pragma region: WIFI
 
-void RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
+bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
+  bool success = false;
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) 
   {
-    DBG.println(F("WiFi connection in station mode failed!"));
-    DBG.println(F("Reboot in 10 s!"));
-    vTaskDelay(10000/portTICK_PERIOD_MS);
-    ESP.restart();
+    // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
+    //        - display state
+    DBG.println("WiFi Failed! Reboot in 10 s as AP!");
+    success = false;
   }
-  DBG.println();
-
-  if (!MDNS.begin(getDeviceName(DEVICE_TYPE).c_str())) 
-  {
-    DBG.println(F("Error starting mDNS, use local IP instead!"));
-  } 
   else 
   {
-    DBG.printf("Starting mDNS, find me under <http://www.%s.local>\n", WiFi.getHostname());
+    DBG.print(F("WiFi connected to SSID: "));
+    DBG.println(WiFi.SSID());
+    success = true;
+  }
+
+  if (!MDNS.begin(deviceName)) 
+  {
+      DBG.println("Error starting mDNS, use local IP instead!");
+  } else {
+    DBG.print(F("Starting mDNS, find me under <http://www."));
+    DBG.print(getDeviceName(DEVICE_TYPE));
+    DBG.println(F(".local>"));
   }
 
   DBG.print(F("Wifi client started: "));
   DBG.println(WiFi.getHostname());
   DBG.print(F("IP Address: "));
   DBG.println(WiFi.localIP());
+
+  return success;
 }
 
 bool RTKRoverManager::checkConnectionToWifiStation() 
@@ -70,23 +78,21 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(WiFi.softAPIP());
 }
 
-void RTKRoverManager::setupWifi(AsyncWebServer* server)
+void RTKRoverManager::setupWiFi(AsyncWebServer* server)
 {
-  WiFi.setHostname(getDeviceName(DEVICE_TYPE).c_str());
-
   // Check if we have credentials for a available network
   String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
   String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
-  DBG.printf("lastSSID: %s, lastPassword: %s\n", lastSSID, lastPassword);
 
-  if (!savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
+  if (! savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
   {
     setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
     delay(500);
-  } else 
+  } 
+  else
   {
-   setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
-   delay(500);
+    setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
+    delay(500);
   }
   startServer(server);
 }
