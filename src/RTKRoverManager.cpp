@@ -18,29 +18,30 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   {
     // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
     //        - display state
-    DBG.println("WiFi Failed! Reboot in 10 s as AP!");
+    DBG.println("WiFi Failed! Try to decrease the distance to the AP!");
     success = false;
   }
   else 
   {
     DBG.print(F("WiFi connected to SSID: "));
     DBG.println(WiFi.SSID());
+    DBG.print(F("Wifi client started: "));
+    DBG.println(WiFi.getHostname());
+    DBG.print(F("IP Address: "));
+    DBG.println(WiFi.localIP());
     success = true;
   }
 
   if (!MDNS.begin(deviceName)) 
   {
-      DBG.println("Error starting mDNS, use local IP instead!");
-  } else {
+    DBG.println("Error starting mDNS, use local IP instead!");
+  } 
+  else 
+  {
     DBG.print(F("Starting mDNS, find me under <http://www."));
     DBG.print(getDeviceName(DEVICE_TYPE));
     DBG.println(F(".local>"));
   }
-
-  DBG.print(F("Wifi client started: "));
-  DBG.println(WiFi.getHostname());
-  DBG.print(F("IP Address: "));
-  DBG.println(WiFi.localIP());
 
   return success;
 }

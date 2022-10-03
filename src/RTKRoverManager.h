@@ -87,10 +87,15 @@ namespace RTKRoverManager
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
-   * @brief Setup WiFi: Access point on first run or if no credentials saved in SPIFFS,
+   * @brief Setup WiFi: Access point on first run (if no credentials saved in SPIFFS),
    *        if this is the case you must enter your wifi credentials into the web form 
-   *        (192.168.4.1 is default IP) and reboot.
-   *        Station mode if the device can connect to an saved AP successfully.
+   *        (192.168.4.1 is default IP) and reboot. You can change the WiFi credentials
+   *        while connected via the web form or press the wipe button to delete the memory.
+   *        The device boots in AP mode again.
+   *        If the saved credentials are correct (and the AP is available), the 
+   *        device will switch connect in station mode after reboot.
+   * 
+   * @param server Pointer to AsyncWebServer, where the web form is hosted.
    * 
    */
   void setupWiFi(AsyncWebServer* server);
