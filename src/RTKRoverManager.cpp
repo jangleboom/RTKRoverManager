@@ -11,14 +11,14 @@
 bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
+
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+
   if (WiFi.waitForConnectResult() != WL_CONNECTED) 
   {
-    // TODO:  - count reboots and stop after 3 times (save in SPIFFS)
-    //        - display state
-    DBG.println("WiFi Failed! Try to decrease the distance to the AP!");
+    DBG.println("WiFi Failed! Try to decrease the distance to the AP or check your PW!");
     success = false;
   }
   else 
@@ -30,17 +30,17 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
     DBG.print(F("IP Address: "));
     DBG.println(WiFi.localIP());
     success = true;
-  }
 
-  if (!MDNS.begin(deviceName)) 
-  {
-    DBG.println("Error starting mDNS, use local IP instead!");
-  } 
-  else 
-  {
-    DBG.print(F("Starting mDNS, find me under <http://www."));
-    DBG.print(getDeviceName(DEVICE_TYPE));
-    DBG.println(F(".local>"));
+    if (!MDNS.begin(deviceName)) 
+    {
+      DBG.println("Error starting mDNS, use local IP instead!");
+    } 
+    else 
+    {
+      DBG.print(F("Starting mDNS, find me under <http://www."));
+      DBG.print(getDeviceName(DEVICE_TYPE));
+      DBG.println(F(".local>"));
+    }
   }
 
   return success;
@@ -86,16 +86,24 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
   String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
   String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
 
-  if (! savedNetworkAvailable(lastSSID) || lastPassword.isEmpty() ) 
+  if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
     setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
     delay(500);
   } 
   else
   {
+    while (! savedNetworkAvailable(lastSSID)) 
+    {
+      DBG.print(F("Waiting for HotSpot "));
+      DBG.print(lastSSID);
+      DBG.println(F(" to appear..."));
+      vTaskDelay(1000/portTICK_RATE_MS);
+    }
     setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
     delay(500);
   }
+
   startServer(server);
 }
 
