@@ -3,7 +3,7 @@
 # Real Time Kinematics Rover Manager
 ### RTKRoverManager
 This is a submodule of the 
-[RTKRover](https://github.com/audio-communication-group/RTKRover).
+[RTKRover](https://github.com/audio-communication-group/RTKRover) .
 
 Configure ESP WiFi credentials and other default values for a RTK rover. 
 The device runs as an access point if no credentials are saved, (SSID: 
