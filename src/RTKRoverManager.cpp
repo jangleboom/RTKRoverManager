@@ -426,7 +426,8 @@ String RTKRoverManager::getDeviceName(const String& prefix)
     return deviceName;
   }
 
-  uint32_t RTKRoverManager::getChipId() {
+  uint32_t RTKRoverManager::getChipId() 
+  {
     uint32_t chipId = 0;
 
     for(int i=0; i<17; i=i+8) {
