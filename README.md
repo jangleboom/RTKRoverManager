@@ -1,7 +1,7 @@
 # Real Time Kinematics Rover Manager
 ### RTKRoverManager
 
-<img align="right" src="./screenshots/rtkrover.png" width="240"/>
+<img align="right" src="./screenshots/RTKRoverManager.png" width="240"/>
 
 This is a submodule of the [RTKRover](https://github.com/audio-communication-group/RTKRover).
 
