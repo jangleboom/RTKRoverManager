@@ -245,7 +245,6 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
       } 
     }
 
-
   }
   DBG.println(F("Data saved to SPIFFS!"));
   request->send_P(200, "text/html", INDEX_HTML, RTKRoverManager::processor);
