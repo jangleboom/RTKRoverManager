@@ -8,4 +8,6 @@ src/main.cpp
 
 lib/*
 
-.DS_Store 
+.DS_Store
+
+Doxyfile
