@@ -89,6 +89,7 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
     setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    startServer(server);
     delay(500);
   } 
   else
@@ -103,8 +104,6 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
     setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
     delay(500);
   }
-
-  startServer(server);
 }
 
 bool RTKRoverManager::savedNetworkAvailable(const String& ssid) 
