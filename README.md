@@ -10,4 +10,4 @@ The device runs as an access point if no credentials are saved, (SSID:
 "rtkrover"+chipID, IP: 192.168.4.1). 
 Fill the web form with your data, save and reboot. 
 
-("rtkrover"+chipID.local or local IP).
+("rtkrover" + CHIP_ID + ".local" or via local IP).
