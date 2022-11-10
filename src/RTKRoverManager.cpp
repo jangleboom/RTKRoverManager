@@ -83,8 +83,11 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
 void RTKRoverManager::setupWiFi(AsyncWebServer* server)
 {
   // Check if we have credentials for a available network
-  String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-  String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+  // String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+  // String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+
+  String lastSSID = getDeviceName("rtkrover");
+  String lastPassword = "michelroth2023";
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
