@@ -13,7 +13,8 @@ AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
 void setup() 
-{ //===============================================================================
+{ 
+  //===============================================================================
   #ifdef DEBUGGING
   Serial.begin(BAUD);
   while (!Serial) {};

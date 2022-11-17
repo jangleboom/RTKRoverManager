@@ -23,17 +23,6 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   }
   else 
   {
-    if (!MDNS.begin(deviceName)) 
-    {
-      DBG.println("Error starting mDNS, use local IP instead!");
-    } 
-    else 
-    {
-      DBG.print(F("Starting mDNS, find me under <http://www."));
-      DBG.print(getDeviceName(DEVICE_TYPE));
-      DBG.println(F(".local>"));
-    }
-
     DBG.print(F("WiFi connected to SSID: "));
     DBG.println(WiFi.SSID());
     DBG.print(F("Wifi client started: "));
@@ -347,11 +336,11 @@ bool RTKRoverManager::formatSPIFFS()
  
   if (formatted) 
   {
-    DBG.println("\n\nSuccess formatting");
+    DBG.println("\n\nSuccessfully formatted");
   }
   else
   {
-    DBG.println("\n\nError formatting");
+    DBG.println("\n\nError during formatting");
   }
 
   return formatted;

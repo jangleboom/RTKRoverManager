@@ -9,7 +9,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>RTK rover setup</title>
+    <title>RTK rover setup done</title>
     <style>
         body {
             background-color: #4180C8;
@@ -43,7 +43,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
             let label = `in ${timeleft} second(s)`;
             document.getElementById("countdown").innerHTML = label;
             if ((timeleft) == -1) {
-                document.getElementById("countdown").innerHTML = "done";
+                document.getElementById("countdown").innerHTML = "(You can close this now.)";
             }
             timeleft -= 1;
         }, 1000);
@@ -51,23 +51,18 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
 </head>
 
 <body>
-    <h2>RTK Rover Station</h2>
-    <h3>restart device</h3>
-
-    <span id="countdown">in 5 second(s)</span> <br>
+    <h2>RTK Rover</h2>
+    <h3>setup done</h3>
+    <br>
+    device will restart<br>
+    and connect to <br>
+    SSID: %next_ssid%<br>
+    <br>
+    <br>
     <progress value="0" max="5" id="progressBar"> </progress><br>
-    <p>
-    <table class=center>
-        <tr>
-            <td style="text-align:right;"> SSID: </td>
-            <td style="text-align:left;"> %next_ssid% </td>
-        </tr>
-        <tr>
-            <td style="text-align:right;"> ADDR: </td>
-            <td style="text-align:left;"> <a href="http://%next_addr%">http://%next_addr%</a> </td>
-        </tr>
-    </table>
-</p>
+    <br>
+    <br>
+    <span id="countdown">in 5 second(s)</span> <br>
 
 </body>
 
