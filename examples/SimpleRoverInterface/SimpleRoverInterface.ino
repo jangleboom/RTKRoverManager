@@ -21,12 +21,17 @@ void setup()
   #endif
 
   //===============================================================================
-  // Init file system
-  if (!setupSPIFFS(FORMAT_SPIFFS_IF_FAILED)) while (true) {}; // Freezing
-  
+  // Initialize SPIFFS
+  if (!setupSPIFFS()) 
+  {
+    DBG.println(F("setupSPIFFS failed, freezing"));
+    while (true) {};
+  }
+  //formatSPIFFS(); // Use board_build.partitions in platformio.ini
+
   //===============================================================================
   
-  setupWifi(&server);
+  setupWiFi(&server);
 }
 
 

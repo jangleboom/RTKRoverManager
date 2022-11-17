@@ -23,14 +23,6 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   }
   else 
   {
-    DBG.print(F("WiFi connected to SSID: "));
-    DBG.println(WiFi.SSID());
-    DBG.print(F("Wifi client started: "));
-    DBG.println(WiFi.getHostname());
-    DBG.print(F("IP Address: "));
-    DBG.println(WiFi.localIP());
-    success = true;
-
     if (!MDNS.begin(deviceName)) 
     {
       DBG.println("Error starting mDNS, use local IP instead!");
@@ -41,6 +33,15 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
       DBG.print(getDeviceName(DEVICE_TYPE));
       DBG.println(F(".local>"));
     }
+
+    DBG.print(F("WiFi connected to SSID: "));
+    DBG.println(WiFi.SSID());
+    DBG.print(F("Wifi client started: "));
+    DBG.println(WiFi.getHostname());
+    DBG.print(F("IP Address: "));
+    DBG.println(WiFi.localIP());
+
+    success = true;
   }
 
   return success;
@@ -314,26 +315,46 @@ String RTKRoverManager::processor(const String& var)
                                 SPIFFS
 =================================================================================
 */
-bool RTKRoverManager::setupSPIFFS(bool formatIfFailed) 
+bool RTKRoverManager::setupSPIFFS() 
 {
-  bool success = false;
+  bool isMounted = false; 
 
-  #ifdef ESP32
-    if (SPIFFS.begin(formatIfFailed)) 
+  if ( !SPIFFS.begin(false) )
+  {
+    DBG.println("SPIFFS mount failed");
+    if ( !SPIFFS.begin(true) )
+      {
+        DBG.println("SPIFFS formatting failed");
+        return isMounted;
+      }
+      else
+      {
+        DBG.println("SPIFFS formatted");
+      }
+    } 
+    else
     {
-      DBG.println("SPIFFS file system successfully mounted");
-      success = true;
+      DBG.println("SPIFFS mounted");
+      isMounted = true;
     }
-  #else
-    if (!SPIFFS.begin()) 
-    {
-      DBG.println("An Error has occurred while mounting SPIFFS");
-      success = false;
-      return success;
-    }
-  #endif
 
-  return success;
+    return isMounted;
+}
+
+bool RTKRoverManager::formatSPIFFS()
+{
+  bool formatted = SPIFFS.format();
+ 
+  if (formatted) 
+  {
+    DBG.println("\n\nSuccess formatting");
+  }
+  else
+  {
+    DBG.println("\n\nError formatting");
+  }
+
+  return formatted;
 }
 
 String RTKRoverManager::readFile(fs::FS &fs, const char* path) 
@@ -432,7 +453,5 @@ String RTKRoverManager::getDeviceName(const String& prefix)
     for(int i=0; i<17; i=i+8) {
       chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
     }
-      DBG.print("chipId: ");
-      DBG.println(chipId, HEX);
       return chipId;
   }

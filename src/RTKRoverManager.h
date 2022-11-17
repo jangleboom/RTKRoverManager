@@ -60,10 +60,10 @@ namespace RTKRoverManager
   // Paths for SPIFFS file management
   const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
   const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
-  const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host";
-  const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port";
-  const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user";
-  const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point";
+  const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host.txt";
+  const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port.txt";
+  const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user.txt";
+  const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point.txt";
   
   //===============================================================================
   // Wifi
@@ -167,11 +167,22 @@ namespace RTKRoverManager
   /**
    * @brief Just init SPIFFS for ESP32 or ESP8266
    * 
-   * @param format  True if SPIFFS should formated at start
-   * @return true   If SPIFFS is successfully initialized
-   *         false  If SPIFFS init failed
+   * If mounting fails, it will try to format the partition
    */
-  bool setupSPIFFS(bool formatIfFailed);
+  bool setupSPIFFS(void);
+
+  /**
+   * @brief Just format the partition
+   * 
+   */
+
+  /**
+   * @brief 
+   * 
+   * @return true   Formatting succeeded
+   * @return false  Formatting failed
+   */
+  bool formatSPIFFS(void);
 
   /**
    * @brief         Write data to SPIFFS

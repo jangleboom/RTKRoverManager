@@ -10,7 +10,7 @@ using namespace RTKRoverManager;
 test(processorWriteAndReadSpiffs) 
 {
     String testValue = "TestValue";
-    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValue";
+    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValue.txt";
     if (SPIFFS.exists(PATH_TEST_VALUE)) 
     {
         if (!SPIFFS.remove(PATH_TEST_VALUE))
