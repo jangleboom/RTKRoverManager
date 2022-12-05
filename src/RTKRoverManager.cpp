@@ -429,6 +429,7 @@ String RTKRoverManager::getDeviceName(const String& prefix)
     
     deviceName.reserve(prefixLen + suffixLen);
     deviceName += prefix;
+    deviceName += "-";
     deviceName += suffix;
 
 
