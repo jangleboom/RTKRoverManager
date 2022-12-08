@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include <RTKRoverManager.h>
 #include <ManagerConfig.h>
 
@@ -22,14 +22,15 @@ void setup()
   #endif
 
   //===============================================================================
-  // Initialize SPIFFS
-  if (!setupSPIFFS()) 
+  // Initialize LittleFS
+  if (!setupLittleFS()) 
   {
-    DBG.println(F("setupSPIFFS failed, freezing"));
-    while (true) {};
+    formatLittleFS(); // Use board_build.partitions in platformio.ini
   }
-  //formatSPIFFS(); // Use board_build.partitions in platformio.ini
 
+  // Uncomment if you want to format (e. g after changing partition sizes)
+  // (And dont forget to comment this again after one run ;)
+  // formatLittleFS();
   //===============================================================================
   
   setupWiFi(&server);
