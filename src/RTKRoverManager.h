@@ -10,36 +10,33 @@
  *          - a check for special characters in the form
  *          - a check of the number of decimal places in the input of the geo-coordinates 
  *            with regard to a suitable level of accuracy
- *          - upload html and (separated css and js) to SPIFFS 
- * 
- * @note    FYI: A good tutorial about how to transfer input data from a from and save them to SPIFFS
- *          https://medium.com/@adihendro/html-form-data-input-c942ba23224
+ *          - upload html and (separated css and js) to LittleFS 
+ *          - upload html to flash and remove them from code
  */
 
 #ifndef RTK_ROVER_MANAGER_H
 #define RTK_ROVER_MANAGER_H
 
 #include <Arduino.h>
+#include <WiFi.h>
 #include <ESPmDNS.h>
+#include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <LittleFS.h> 
+#include <FS.h>
+#include <ManagerConfig.h>
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
-#include <ManagerConfig.h>
 
-#ifdef ESP32
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
-  #include <SPIFFS.h>
-#else
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
-  #include <Hash.h>
-  #include <FS.h>
-#endif
 
 namespace RTKRoverManager 
 {
+  // LittleFS
+  #define FILE_WRITE                              "w"
+  #define FILE_READ                               "r"
+  #define ROOT_DIR                                "/"
+
   // DEVICE_TYPE can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
   #ifndef DEVICE_TYPE
   const char DEVICE_TYPE[] PROGMEM = "rtkrover";
@@ -48,8 +45,8 @@ namespace RTKRoverManager
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
   const char AP_PASSWORD[] PROGMEM = "12345678";
   const char IP_AP[] PROGMEM = "192.168.4.1";
-  // Parameters for SPIFFS file management
-  #define FORMAT_SPIFFS_IF_FAILED true
+  // Parameters for LittleFS file management
+  #define FORMAT_LittleFS_IF_FAILED true
   const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
   const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
   const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
@@ -57,7 +54,7 @@ namespace RTKRoverManager
   const char PARAM_RTK_CASTER_USER[] PROGMEM = "caster_user";
   const char PARAM_RTK_MOINT_POINT[] PROGMEM = "mount_point";
 
-  // Paths for SPIFFS file management
+  // Paths for LittleFS file management
   const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
   const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
   const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host.txt";
@@ -87,7 +84,7 @@ namespace RTKRoverManager
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
-   * @brief Setup WiFi: Access point on first run (if no credentials saved in SPIFFS),
+   * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
    *        if this is the case you must enter your wifi credentials into the web form 
    *        (192.168.4.1 is default IP) and reboot. You can change the WiFi credentials
    *        while connected via the web form or press the wipe button to delete the memory.
@@ -111,7 +108,7 @@ namespace RTKRoverManager
   /**
    * @brief Check possibility of connecting with an availbale network.
    * 
-   * @param ssid        SSID of saved network in SPIFFS
+   * @param ssid        SSID of saved network in LittleFS
    * @return true       If the credentials are complete and the network is available.
    * @return false      If the credentials are incomplete or the network is not available.
    */
@@ -142,7 +139,7 @@ namespace RTKRoverManager
   void notFound(AsyncWebServerRequest *request);
 
   /**
-   * @brief Action to handle wipe SPIFFS button
+   * @brief Action to handle wipe LittleFS button
    * 
    * @param request Request
    */
@@ -163,13 +160,13 @@ namespace RTKRoverManager
   void actionUpdateData(AsyncWebServerRequest *request);
 
   //===============================================================================
-  // SPIFFS
+  // LittleFS
   /**
-   * @brief Just init SPIFFS for ESP32 or ESP8266
+   * @brief Just init LittleFS for ESP32 or ESP8266
    * 
    * If mounting fails, it will try to format the partition
    */
-  bool setupSPIFFS(void);
+  bool setupLittleFS(void);
 
   /**
    * @brief Just format the partition
@@ -182,10 +179,10 @@ namespace RTKRoverManager
    * @return true   Formatting succeeded
    * @return false  Formatting failed
    */
-  bool formatSPIFFS(void);
+  bool formatLittleFS(void);
 
   /**
-   * @brief         Write data to SPIFFS
+   * @brief         Write data to LittleFS
    * 
    * @param fs      Address of file system
    * @param path    Path to file
@@ -194,7 +191,7 @@ namespace RTKRoverManager
   void writeFile(fs::FS &fs, const char* path, const char* message);
 
   /**
-   * @brief           Read data from SPIFFS
+   * @brief           Read data from LittleFS
    * 
    * @param fs        Address of file system
    * @param path      Path to file
@@ -203,32 +200,32 @@ namespace RTKRoverManager
   String readFile(fs::FS &fs, const char* path);
 
   /**
-   * @brief List all saved SPIFFS files 
+   * @brief List all saved LittleFS files 
    * 
    */
   void listFiles(void);
 
   /**
-   * @brief Delete all saved SPIFFS files 
+   * @brief Delete all saved LittleFS files 
    * 
    */
-  void wipeSpiffsFiles(void);
+  void wipeLittleFSFiles(void);
 
-/**
- * @brief Get the unique Device Name 
- * 
- * @param prefix Device name e. g. rtkrover
- * @return String Name + ID
- */
-String getDeviceName(const String &prefix);
+  /**
+   * @brief Get the unique Device Name 
+   * 
+   * @param prefix Device name e. g. rtkrover
+   * @return String Name + ID
+   */
+  String getDeviceName(const String &prefix);
 
 
-/**
- * @brief Get the Chip Id (part of the MAC address)
- * 
- * @return uint32_t Chip Id
- */
-uint32_t getChipId(void);
+  /**
+   * @brief Get the Chip Id (part of the MAC address)
+   * 
+   * @return uint32_t Chip Id
+   */
+  uint32_t getChipId(void);
 
 }
 #endif /*** RTK_ROVER_MANAGER_H ***/

@@ -72,24 +72,29 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
 
 void RTKRoverManager::setupWiFi(AsyncWebServer* server)
 {
+  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
+  WiFi.disconnect(true);       // STA sollte noch verbunden sein
+
   // Check if we have credentials for a available network
-  String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-  String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+  String lastSSID = readFile(LittleFS, PATH_WIFI_SSID);
+  String lastPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
     setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    delay(500);
     startServer(server);
     delay(500);
   } 
   else
   {
-    while (! savedNetworkAvailable(lastSSID)) 
+    while ( !savedNetworkAvailable(lastSSID) ) 
     {
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
       DBG.println(F(" to appear..."));
-      vTaskDelay(1000/portTICK_RATE_MS);
+      // vTaskDelay(1000/portTICK_RATE_MS);
+      delay(1000);
     }
     setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
     delay(500);
@@ -167,12 +172,12 @@ void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request)
       if (p->value().length() > 0) 
       {
         DBG.printf("wipe command received: %s",p->value().c_str());
-        wipeSpiffsFiles();
+        wipeLittleFSFiles();
       } 
-     }
-    } 
+    }
+  } 
 
-  DBG.print(F("Data in SPIFFS was wiped out!"));
+  DBG.print(F("Data in LittleFS was wiped out!"));
   request->send_P(200, "text/html", INDEX_HTML, processor);
 }
 
@@ -190,7 +195,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_WIFI_SSID, p->value().c_str());
+        writeFile(LittleFS, PATH_WIFI_SSID, p->value().c_str());
       } 
     }
 
@@ -198,7 +203,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_WIFI_PASSWORD, p->value().c_str());
+        writeFile(LittleFS, PATH_WIFI_PASSWORD, p->value().c_str());
       } 
     }
 
@@ -206,7 +211,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_HOST, p->value().c_str());
+        writeFile(LittleFS, PATH_RTK_CASTER_HOST, p->value().c_str());
       } 
     }
 
@@ -214,7 +219,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_PORT, p->value().c_str());
+        writeFile(LittleFS, PATH_RTK_CASTER_PORT, p->value().c_str());
       } 
     }
 
@@ -222,7 +227,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_USER, p->value().c_str());
+        writeFile(LittleFS, PATH_RTK_CASTER_USER, p->value().c_str());
       } 
     }
 
@@ -230,12 +235,12 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_MOINT_POINT, p->value().c_str());
+        writeFile(LittleFS, PATH_RTK_MOINT_POINT, p->value().c_str());
       } 
     }
 
   }
-  DBG.println(F("Data saved to SPIFFS!"));
+  DBG.println(F("Data saved to LittleFS!"));
   request->send_P(200, "text/html", INDEX_HTML, RTKRoverManager::processor);
 }
 
@@ -244,43 +249,43 @@ String RTKRoverManager::processor(const String& var)
 {
   if (var == PARAM_WIFI_SSID) 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
     return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
   }
   else if (var == PARAM_WIFI_PASSWORD) 
   {
-    String savedPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+    String savedPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
 
   else if (var == PARAM_RTK_CASTER_HOST) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_HOST);
+    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_HOST);
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_PORT) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_PORT);
+    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_PORT);
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_PORT) : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_USER) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_USER);
+    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_USER);
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_USER) : savedCaster);
   }
 
   else if (var == PARAM_RTK_MOINT_POINT) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_MOINT_POINT);
+    String savedCaster = readFile(LittleFS, PATH_RTK_MOINT_POINT);
     return (savedCaster.isEmpty() ? String(PARAM_RTK_MOINT_POINT) : savedCaster);
   }
  
   else if (var == "next_addr") 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-    String savedPW = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
+    String savedPW = readFile(LittleFS, PATH_WIFI_PASSWORD);
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
       return String(IP_AP);
@@ -293,7 +298,7 @@ String RTKRoverManager::processor(const String& var)
   }
   else if (var == "next_ssid") 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
     return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
   return String();
@@ -301,38 +306,30 @@ String RTKRoverManager::processor(const String& var)
 
 /*
 =================================================================================
-                                SPIFFS
+                                LittleFS
 =================================================================================
 */
-bool RTKRoverManager::setupSPIFFS() 
+bool RTKRoverManager::setupLittleFS() 
 {
   bool isMounted = false; 
 
-  if ( !SPIFFS.begin(false) )
+  if ( !LittleFS.begin() ) 
   {
-    DBG.println("SPIFFS mount failed");
-    if ( !SPIFFS.begin(true) )
-      {
-        DBG.println("SPIFFS formatting failed");
-        return isMounted;
-      }
-      else
-      {
-        DBG.println("SPIFFS formatted");
-      }
-    } 
-    else
-    {
-      DBG.println("SPIFFS mounted");
-      isMounted = true;
-    }
-
+    Serial.println(F("An Error has occurred while mounting LittleFS"));
     return isMounted;
+  } 
+  else
+  {
+    DBG.println("LittleFS mounted");
+    isMounted = true;
+  }
+
+  return isMounted;
 }
 
-bool RTKRoverManager::formatSPIFFS()
+bool RTKRoverManager::formatLittleFS()
 {
-  bool formatted = SPIFFS.format();
+  bool formatted = LittleFS.format();
  
   if (formatted) 
   {
@@ -348,20 +345,22 @@ bool RTKRoverManager::formatSPIFFS()
 
 String RTKRoverManager::readFile(fs::FS &fs, const char* path) 
 {
-  DBG.printf("Reading file: %s\r\n", path);
-  File file = fs.open(path, "r");
+  String fileContent;
 
-  if (!file || file.isDirectory()) 
+  DBG.printf("Reading file: %s\r\n", path);
+  File file = fs.open(path, FILE_READ);
+
+  if ( !file || file.isDirectory() ) 
   {
     DBG.println("- empty file or failed to open file");
     return String();
   }
-  DBG.println("- read from file:");
-  String fileContent;
 
-  while (file.available()) 
+  DBG.println("- read from file:");
+
+  while ( file.available() ) 
   {
-    fileContent += String((char)file.read());
+    fileContent += String( (char) file.read() );
   }
   file.close();
   DBG.println(fileContent);
@@ -390,7 +389,7 @@ void RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* messag
 }
 void RTKRoverManager::listFiles() 
 {
-  File root = SPIFFS.open("/");
+  File root = LittleFS.open("/");
   File file = root.openNextFile();
  
   while (file) 
@@ -402,19 +401,21 @@ void RTKRoverManager::listFiles()
   file.close();
   root.close();
 }
-
-void RTKRoverManager::wipeSpiffsFiles() 
+void RTKRoverManager::wipeLittleFSFiles() 
 {
-  File root = SPIFFS.open("/");
+  File root = LittleFS.open(ROOT_DIR, FILE_WRITE);
   File file = root.openNextFile();
 
   DBG.println(F("Wiping: "));
 
   while (file) 
   {
+    const char* PATH = file.path();
     DBG.print("FILE: ");
-    DBG.println(file.path());
-    SPIFFS.remove(file.path());
+    DBG.println(PATH);
+
+    file.close();
+    LittleFS.remove(PATH);
     file = root.openNextFile();
   }
 }
