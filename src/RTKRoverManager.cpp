@@ -329,6 +329,7 @@ bool RTKRoverManager::setupLittleFS()
 
 bool RTKRoverManager::formatLittleFS()
 {
+  DBG.println("Formatting file system, please wait...");
   bool formatted = LittleFS.format();
  
   if (formatted) 
