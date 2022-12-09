@@ -35,7 +35,11 @@ void setup()
   //formatLittleFS();
 
   //wipeLittleFSFiles();  // Use this for deleting all data
+  
+  #ifdef DEBUGGING
   listFiles();
+  delay(3000);
+  #endif
   //===============================================================================
   
 
