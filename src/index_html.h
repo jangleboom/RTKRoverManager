@@ -113,19 +113,18 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
 
                     </tr>
                     <tr>
+                        <td style="text-align:left;">Mount point:</td>
+                        <td>
+                            <input class="text_field" form="Form1" type="text" maxlength="30" name="mount_point" placeholder=%mount_point% style="text-align:center;">
+                        </td>
+                    </tr>
+                    <tr>
                         <td style="text-align:left;">Caster user:</td>
                         <td>
                             <input class="text_field" form="Form1" type="text" maxlength="30" name="caster_user" placeholder=%caster_user% style="text-align:center;">
                         </td>
 
                     </tr>
-                    <tr>
-                        <td style="text-align:left;">Mount point:</td>
-                        <td>
-                            <input class="text_field" form="Form1" type="text" maxlength="30" name="mount_point" placeholder=%mount_point% style="text-align:center;">
-                        </td>
-                    </tr>
-
                     <tr>
                         <td></td>
                         <td style="text-align:right;"> </td>
