@@ -369,57 +369,64 @@ String RTKRoverManager::readFile(fs::FS &fs, const char* path)
   return fileContent;
 }
 
-void RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* message) 
-{
+bool RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* message) 
+{ 
+  bool success = false;
   DBG.printf("Writing file: %s\r\n", path);
 
-  File file = fs.open(path, "w");
+  File file = fs.open(path, FILE_WRITE);
   if (!file) 
   {
     DBG.println("- failed to open file for writing");
-    return;
+    return success;
   }
   if (file.print(message)) 
   {
     DBG.println("- file written");
+    success = true;
   } else 
   {
     DBG.println("- write failed");
+    success = false;
   }
   file.close();
+
+  return success;
 }
+
 void RTKRoverManager::listFiles() 
 {
-  File root = LittleFS.open("/");
+  File root = LittleFS.open("/", FILE_READ);
   File file = root.openNextFile();
  
   while (file) 
   {
-      DBG.print("FILE: ");
-      DBG.println(file.name());
-      file = root.openNextFile();
+    DBG.print("FILE: ");
+    DBG.println(file.name());
+    file = root.openNextFile();
   }
   file.close();
   root.close();
 }
+
 void RTKRoverManager::wipeLittleFSFiles() 
 {
-  File root = LittleFS.open(ROOT_DIR, FILE_WRITE);
+  File root = LittleFS.open("/", FILE_WRITE);
   File file = root.openNextFile();
 
   DBG.println(F("Wiping: "));
 
   while (file) 
   {
-    const char* PATH = file.path();
-    DBG.print("FILE: ");
-    DBG.println(PATH);
-
-    file.close();
-    LittleFS.remove(PATH);
-    file = root.openNextFile();
+      const char* pathStr = strdup(file.path());
+      file.close();
+      LittleFS.remove(pathStr);
+      file = root.openNextFile();
   }
+
+  DBG.println(F("Data in LittleFS wiped out!"));
 }
+
 
 String RTKRoverManager::getDeviceName(const String& prefix) 
   {

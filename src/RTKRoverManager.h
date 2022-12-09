@@ -187,8 +187,9 @@ namespace RTKRoverManager
    * @param fs      Address of file system
    * @param path    Path to file
    * @param message Content to save in file on path
+   * @return        success
    */
-  void writeFile(fs::FS &fs, const char* path, const char* message);
+  bool writeFile(fs::FS &fs, const char* path, const char* message);
 
   /**
    * @brief           Read data from LittleFS

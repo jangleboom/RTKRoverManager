@@ -7,20 +7,14 @@
 using namespace aunit;
 using namespace RTKRoverManager;
 
-test(writeAndReadFileOnLittleFS) 
+test(processorWriteToLittleFS) 
 {
     String testValue = "TestValue";
-    const char* PATH_TEST_VALUE = "/pathTestValue.txt";
-    if (LittleFS.exists(PATH_TEST_VALUE)) 
-    {
-        if (!LittleFS.remove(PATH_TEST_VALUE))
-        {
-            assert("Failed to remove LittleFS path.");
-        }
-    }
-    writeFile(LittleFS, PATH_TEST_VALUE, testValue.c_str());
+    const char* kTestValuePath = "/testValue.txt";
+    if (LittleFS.exists(kTestValuePath)) LittleFS.remove(kTestValuePath);
+    writeFile(LittleFS, kTestValuePath, testValue.c_str());
     delay(100);
-    String savedValue = readFile(LittleFS, PATH_TEST_VALUE);
+    String savedValue = readFile(LittleFS, kTestValuePath);
     assertTrue(savedValue.equals(testValue));
 }
 
