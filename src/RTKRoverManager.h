@@ -47,21 +47,13 @@ namespace RTKRoverManager
   const char IP_AP[] PROGMEM = "192.168.4.1";
   // Parameters for LittleFS file management
   #define FORMAT_LittleFS_IF_FAILED true
-  const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
-  const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
-  const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
-  const char PARAM_RTK_CASTER_PORT[] PROGMEM = "caster_port";
-  const char PARAM_RTK_CASTER_USER[] PROGMEM = "caster_user";
-  const char PARAM_RTK_MOINT_POINT[] PROGMEM = "mount_point";
+  const char PARAM_WIFI_SSID[]        PROGMEM = "ssid"; 
+  const char PARAM_WIFI_PASSWORD[]    PROGMEM = "password";
+  const char PARAM_RTK_CASTER_HOST[]  PROGMEM = "caster_host";
+  const char PARAM_RTK_CASTER_PORT[]  PROGMEM = "caster_port";
+  const char PARAM_RTK_CASTER_USER[]  PROGMEM = "caster_user";
+  const char PARAM_RTK_MOINT_POINT[]  PROGMEM = "mount_point";
 
-  // Paths for LittleFS file management
-  const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
-  const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
-  const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host.txt";
-  const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port.txt";
-  const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user.txt";
-  const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point.txt";
-  
   //===============================================================================
   // Wifi
   /**
@@ -205,6 +197,14 @@ namespace RTKRoverManager
    * 
    */
   void listFiles(void);
+
+  /**
+   * @brief Get the path to a file stored in LittleFS
+   * 
+   * @param fileName  Name of stored file
+   * @return String   Path to LittleFS file
+   */
+  String getPath(const char* fileName);
 
   /**
    * @brief Delete all saved LittleFS files 

@@ -78,8 +78,8 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
   WiFi.setHostname(deviceName.c_str());
   // Check if we have credentials for a available network
-  String lastSSID = readFile(LittleFS, PATH_WIFI_SSID);
-  String lastPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
+  String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+  String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
@@ -197,7 +197,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_WIFI_SSID, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str(), p->value().c_str());
       } 
     }
 
@@ -205,7 +205,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_WIFI_PASSWORD, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str(), p->value().c_str());
       } 
     }
 
@@ -213,7 +213,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_RTK_CASTER_HOST, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_RTK_CASTER_HOST).c_str(), p->value().c_str());
       } 
     }
 
@@ -221,7 +221,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_RTK_CASTER_PORT, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_RTK_CASTER_PORT).c_str(), p->value().c_str());
       } 
     }
 
@@ -229,7 +229,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_RTK_CASTER_USER, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_RTK_CASTER_USER).c_str(), p->value().c_str());
       } 
     }
 
@@ -237,7 +237,7 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, PATH_RTK_MOINT_POINT, p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_RTK_MOINT_POINT).c_str(), p->value().c_str());
       } 
     }
 
@@ -251,43 +251,43 @@ String RTKRoverManager::processor(const String& var)
 {
   if (var == PARAM_WIFI_SSID) 
   {
-    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
   }
   else if (var == PARAM_WIFI_PASSWORD) 
   {
-    String savedPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
+    String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
 
   else if (var == PARAM_RTK_CASTER_HOST) 
   {
-    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_HOST);
+    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_HOST).c_str());
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_PORT) 
   {
-    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_PORT);
+    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_PORT).c_str());
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_PORT) : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_USER) 
   {
-    String savedCaster = readFile(LittleFS, PATH_RTK_CASTER_USER);
+    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_USER).c_str());
     return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_USER) : savedCaster);
   }
 
   else if (var == PARAM_RTK_MOINT_POINT) 
   {
-    String savedCaster = readFile(LittleFS, PATH_RTK_MOINT_POINT);
+    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_MOINT_POINT).c_str());
     return (savedCaster.isEmpty() ? String(PARAM_RTK_MOINT_POINT) : savedCaster);
   }
  
   else if (var == "next_addr") 
   {
-    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
-    String savedPW = readFile(LittleFS, PATH_WIFI_PASSWORD);
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+    String savedPW = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
       return String(IP_AP);
@@ -300,7 +300,7 @@ String RTKRoverManager::processor(const String& var)
   }
   else if (var == "next_ssid") 
   {
-    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
   return String();
@@ -409,6 +409,15 @@ void RTKRoverManager::listFiles()
   }
   file.close();
   root.close();
+}
+
+String RTKRoverManager::getPath(const char* fileName)
+{
+  String path = "/";
+  path += fileName;
+  path += ".txt";
+
+  return path;
 }
 
 void RTKRoverManager::wipeLittleFSFiles() 
