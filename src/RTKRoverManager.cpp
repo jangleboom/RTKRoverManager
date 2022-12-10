@@ -72,16 +72,18 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
 
 void RTKRoverManager::setupWiFi(AsyncWebServer* server)
 {
+  String deviceName = getDeviceName(DEVICE_TYPE);
+
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
-
+  WiFi.setHostname(deviceName.c_str());
   // Check if we have credentials for a available network
   String lastSSID = readFile(LittleFS, PATH_WIFI_SSID);
   String lastPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
-    setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    setupAPMode(deviceName.c_str(), AP_PASSWORD);
     delay(500);
     startServer(server);
     delay(500);
@@ -96,7 +98,7 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
       // vTaskDelay(1000/portTICK_RATE_MS);
       delay(1000);
     }
-    setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
+    setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
     delay(500);
   }
 }
