@@ -97,8 +97,8 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
       DBG.println(F(" to appear..."));
-      DBG.print(attempts);
-      DBG.println(F(". attempt."));
+      // DBG.print(attempts);
+      // DBG.println(F(". attempt."));
       vTaskDelay(1000/portTICK_RATE_MS);
       // if (attempts == 5) 
       // {
