@@ -92,21 +92,10 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
   {
     while ( !savedNetworkAvailable(lastSSID) ) 
     {
-      // static uint8_t attempts = 0;
-      // attempts++;
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
       DBG.println(F(" to appear..."));
-      // DBG.print(attempts);
-      // DBG.println(F(". attempt."));
-      vTaskDelay(1000/portTICK_RATE_MS);
-      // if (attempts == 5) 
-      // {
-      //   // Maybe wrong credential input?
-      //   LittleFS.remove(getPath(PARAM_WIFI_SSID).c_str());
-      //   ESP.restart();
-      // }
-
+      vTaskDelay(3000/portTICK_RATE_MS);
     }
     setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
     delay(500);
