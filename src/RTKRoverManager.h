@@ -85,9 +85,9 @@ namespace RTKRoverManager
    *        device will switch connect in station mode after reboot.
    * 
    * @param server Pointer to AsyncWebServer, where the web form is hosted.
-   * 
+   * @return success
    */
-  void setupWiFi(AsyncWebServer* server);
+  bool setupWiFi(AsyncWebServer* server);
 
   /**
    * @brief Recennect to the last AP, if reachable

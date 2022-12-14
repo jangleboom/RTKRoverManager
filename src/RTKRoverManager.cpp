@@ -70,8 +70,10 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(WiFi.softAPIP());
 }
 
-void RTKRoverManager::setupWiFi(AsyncWebServer* server)
+bool RTKRoverManager::setupWiFi(AsyncWebServer* server)
 {
+  bool success = false;
+
   String deviceName = getDeviceName(DEVICE_TYPE);
 
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
@@ -87,19 +89,25 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
     delay(500);
     startServer(server);
     delay(500);
+    success = true;
   } 
   else
   {
-    while ( !savedNetworkAvailable(lastSSID) ) 
+    if ( !savedNetworkAvailable(lastSSID) ) 
     {
-      DBG.print(F("Waiting for HotSpot "));
+      DBG.print(F("HotSpot '"));
       DBG.print(lastSSID);
-      DBG.println(F(" to appear..."));
-      vTaskDelay(3000/portTICK_RATE_MS);
+      DBG.println(F("' not found."));
+      success = false;
     }
-    setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
-    delay(500);
+    else 
+    {
+      setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
+      success = true;
+    }
   }
+
+  return success;
 }
 
 bool RTKRoverManager::savedNetworkAvailable(const String& ssid) 
