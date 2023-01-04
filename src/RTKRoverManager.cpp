@@ -27,7 +27,7 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
     DBG.println(WiFi.SSID());
     DBG.print(F("Wifi client started: "));
     DBG.println(WiFi.getHostname());
-    DBG.print(F("IP Address: "));
+    DBG.print(F("Station IP Address: "));
     DBG.println(WiFi.localIP());
 
     success = true;
@@ -66,8 +66,11 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(result ? "Ready" : "Failed!");
   DBG.print(F("Access point started: "));
   DBG.println(apSsid);
-  DBG.print(F("IP address: "));
+  DBG.print(F("AP IP address: "));
   DBG.println(WiFi.softAPIP());
+  DBG.print(F("AP Password: "));
+  DBG.println(AP_PASSWORD);
+
 }
 
 bool RTKRoverManager::setupWiFi(AsyncWebServer* server)

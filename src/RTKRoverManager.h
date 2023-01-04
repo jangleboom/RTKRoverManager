@@ -55,7 +55,7 @@ namespace RTKRoverManager
   const char PARAM_RTK_MOINT_POINT[]  PROGMEM = "mount_point";
 
   //===============================================================================
-  // Wifi
+
   /**
    * @brief Setup RTK rover station in station mode to enter further settings
    * 
