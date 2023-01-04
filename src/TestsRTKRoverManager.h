@@ -22,7 +22,7 @@ test(deleteFileOnLittleFS)
 {
     String testValue = "TestValueToDelete";
     const char PATH_TEST_VALUE[] = "/pathTestValueToDelete.txt";
-    clearFile(PATH_TEST_VALUE);
+    clearPath(PATH_TEST_VALUE);
     writeFile(LittleFS, PATH_TEST_VALUE, testValue.c_str());
     delay(100);
     String savedValue = readFile(LittleFS, PATH_TEST_VALUE);

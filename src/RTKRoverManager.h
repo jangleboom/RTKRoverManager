@@ -210,7 +210,7 @@ namespace RTKRoverManager
    * @brief Delete file in file system
    * 
    */
-  void clearFile(const char* fileName);
+  void clearPath(const char* path);
 
   /**
    * @brief Delete all saved LittleFS files 

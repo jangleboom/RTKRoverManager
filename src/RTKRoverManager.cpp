@@ -430,11 +430,11 @@ String RTKRoverManager::getPath(const char* fileName)
   return path;
 }
 
-void RTKRoverManager::clearFile(const char* fileName)
+void RTKRoverManager::clearPath(const char* path)
 {
-  if ( LittleFS.exists(fileName) )
+  if ( LittleFS.exists(path) )
   {
-    if ( ! LittleFS.remove(fileName) )
+    if ( ! LittleFS.remove(path) )
     {
         assert("Failed to remove LittleFS path.");
     }
