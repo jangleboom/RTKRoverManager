@@ -22,13 +22,7 @@ test(deleteFileOnLittleFS)
 {
     String testValue = "TestValueToDelete";
     const char PATH_TEST_VALUE[] = "/pathTestValueToDelete.txt";
-    if (LittleFS.exists(PATH_TEST_VALUE)) 
-    {
-        if (!LittleFS.remove(PATH_TEST_VALUE))
-        {
-            assert("Failed to remove LittleFS path.");
-        }
-    }
+    clearFile(PATH_TEST_VALUE);
     writeFile(LittleFS, PATH_TEST_VALUE, testValue.c_str());
     delay(100);
     String savedValue = readFile(LittleFS, PATH_TEST_VALUE);

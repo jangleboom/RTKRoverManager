@@ -207,6 +207,12 @@ namespace RTKRoverManager
   String getPath(const char* fileName);
 
   /**
+   * @brief Delete file in file system
+   * 
+   */
+  void clearFile(const char* fileName);
+
+  /**
    * @brief Delete all saved LittleFS files 
    * 
    */
