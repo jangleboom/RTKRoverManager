@@ -12,7 +12,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
     <title>RTK rover setup done</title>
     <style>
         body {
-            background-color: #241E4E;
+            background-color: #399E5A;
             color: #DFDFDF;
             font-family: Lato, Helvetica, Roboto, sans-serif;
             text-align: center;

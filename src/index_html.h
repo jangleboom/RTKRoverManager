@@ -13,6 +13,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         body 
         {
             background-color: #241E4E;
+            background-image: radial-gradient(#15112C, #241E4E, #312966);
             color: #DFDFDF;
             font-family: Lato, Helvetica, Roboto, sans-serif;
             text-align: center;
