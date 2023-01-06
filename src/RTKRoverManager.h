@@ -32,6 +32,8 @@
 
 namespace RTKRoverManager 
 {
+  #define STATION_SERVER_ENABLED false
+
   // LittleFS
   #define FILE_WRITE                              "w"
   #define FILE_READ                               "r"
@@ -53,6 +55,7 @@ namespace RTKRoverManager
   const char PARAM_RTK_CASTER_PORT[]  PROGMEM = "caster_port";
   const char PARAM_RTK_CASTER_USER[]  PROGMEM = "caster_user";
   const char PARAM_RTK_MOINT_POINT[]  PROGMEM = "mount_point";
+  const char PARAM_DEVICE_NAME[]       PROGMEM = "device_name";
 
   //===============================================================================
 

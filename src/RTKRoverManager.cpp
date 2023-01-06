@@ -106,6 +106,22 @@ bool RTKRoverManager::setupWiFi(AsyncWebServer* server)
     else 
     {
       setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
+      if (STATION_SERVER_ENABLED)
+      {
+        if (!MDNS.begin(deviceName.c_str())) 
+        {
+          DBG.println("Error starting mDNS, use local IP instead!");
+        } 
+        else 
+        {
+          DBG.print(F("Starting mDNS, find me under <http://"));
+          DBG.print(deviceName);
+          DBG.println(F(".local>"));
+        }
+        delay(500);
+        startServer(server);
+        delay(500);
+      }
       success = true;
     }
   }
@@ -203,6 +219,16 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
     AsyncWebParameter* p = request->getParam(i);
     DBG.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
 
+    if (strcmp(p->name().c_str(), PARAM_DEVICE_NAME) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        String newName = p->value();
+        newName.toLowerCase();
+        writeFile(LittleFS, getPath(PARAM_DEVICE_NAME).c_str(), newName.c_str());
+      } 
+    }
+
     if (strcmp(p->name().c_str(), PARAM_WIFI_SSID) == 0) 
     {
       if (p->value().length() > 0) 
@@ -268,6 +294,12 @@ String RTKRoverManager::processor(const String& var)
   {
     String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
+  }
+
+  else if (var == PARAM_DEVICE_NAME) 
+  {
+    String savedDeviceName = readFile(LittleFS, getPath(PARAM_DEVICE_NAME).c_str());
+    return (savedDeviceName.isEmpty() ? String(PARAM_DEVICE_NAME) : savedDeviceName);
   }
 
   else if (var == PARAM_RTK_CASTER_HOST) 
@@ -462,19 +494,18 @@ void RTKRoverManager::wipeLittleFSFiles()
 
 String RTKRoverManager::getDeviceName(const String& prefix) 
   {
-    String deviceName((char *)0);
-    String suffix = String(getChipId(), HEX);
+   String deviceName = readFile(LittleFS, getPath(PARAM_DEVICE_NAME).c_str());
 
-    unsigned int prefixLen = prefix.length();
-    unsigned int suffixLen = suffix.length();
-    
-    deviceName.reserve(prefixLen + suffixLen);
-    deviceName += prefix;
-    deviceName += "-";
-    deviceName += suffix;
+    if (deviceName.isEmpty())
+    {
+      String suffix = String(getChipId(), HEX);
 
+      deviceName += prefix;
+      deviceName += "-";
+      deviceName += suffix;
+    }
 
-    return deviceName;
+   return deviceName; 
   }
 
   uint32_t RTKRoverManager::getChipId() 
