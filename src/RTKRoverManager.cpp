@@ -288,42 +288,42 @@ String RTKRoverManager::processor(const String& var)
   if (var == PARAM_WIFI_SSID) 
   {
     String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-    return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
+    return (savedSSID.isEmpty() ? "" : savedSSID);
   }
   else if (var == PARAM_WIFI_PASSWORD) 
   {
     String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-    return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
+    return (savedPassword.isEmpty() ? "" : "*******");
   }
 
   else if (var == PARAM_DEVICE_NAME) 
   {
     String savedDeviceName = readFile(LittleFS, getPath(PARAM_DEVICE_NAME).c_str());
-    return (savedDeviceName.isEmpty() ? String(PARAM_DEVICE_NAME) : savedDeviceName);
+    return (savedDeviceName.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedDeviceName);
   }
 
   else if (var == PARAM_RTK_CASTER_HOST) 
   {
     String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_HOST).c_str());
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
+    return (savedCaster.isEmpty() ? "" : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_PORT) 
   {
     String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_PORT).c_str());
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_PORT) : savedCaster);
+    return (savedCaster.isEmpty() ? "" : savedCaster);
   }
 
   else if (var == PARAM_RTK_CASTER_USER) 
   {
     String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_USER).c_str());
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_USER) : savedCaster);
+    return (savedCaster.isEmpty() ? "" : savedCaster);
   }
 
   else if (var == PARAM_RTK_MOINT_POINT) 
   {
     String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_MOINT_POINT).c_str());
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_MOINT_POINT) : savedCaster);
+    return (savedCaster.isEmpty() ? "" : savedCaster);
   }
  
   else if (var == "next_addr") 
