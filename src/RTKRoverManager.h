@@ -55,7 +55,7 @@ namespace RTKRoverManager
   const char PARAM_RTK_CASTER_PORT[]  PROGMEM = "caster_port";
   const char PARAM_RTK_CASTER_USER[]  PROGMEM = "caster_user";
   const char PARAM_RTK_MOINT_POINT[]  PROGMEM = "mount_point";
-  const char PARAM_DEVICE_NAME[]       PROGMEM = "device_name";
+  const char PARAM_DEVICE_NAME[]      PROGMEM = "device_name";
 
   //===============================================================================
 
