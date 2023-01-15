@@ -310,20 +310,20 @@ String RTKRoverManager::processor(const String& var)
 
   else if (var == PARAM_RTK_CASTER_PORT) 
   {
-    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_PORT).c_str());
-    return (savedCaster.isEmpty() ? "" : savedCaster);
+    String savedCasterPort = readFile(LittleFS, getPath(PARAM_RTK_CASTER_PORT).c_str());
+    return (savedCasterPort.isEmpty() ? "" : savedCasterPort);
   }
 
   else if (var == PARAM_RTK_CASTER_USER) 
   {
-    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_CASTER_USER).c_str());
-    return (savedCaster.isEmpty() ? "" : savedCaster);
+    String savedCasterUser = readFile(LittleFS, getPath(PARAM_RTK_CASTER_USER).c_str());
+    return (savedCasterUser.isEmpty() ? "" : savedCasterUser);
   }
 
   else if (var == PARAM_RTK_MOINT_POINT) 
   {
-    String savedCaster = readFile(LittleFS, getPath(PARAM_RTK_MOINT_POINT).c_str());
-    return (savedCaster.isEmpty() ? "" : savedCaster);
+    String savedMountPoint = readFile(LittleFS, getPath(PARAM_RTK_MOINT_POINT).c_str());
+    return (savedMountPoint.isEmpty() ? "" : savedMountPoint);
   }
  
   else if (var == "next_addr") 
