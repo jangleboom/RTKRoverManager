@@ -16,6 +16,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             --RED_COLOR: #CE6C47;
             --GAINSBORO: #DFDFDF;
             --TEAL_BLUE: #40798C;
+            --BLACK: #000000;
         }
 
         body {
@@ -64,6 +65,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             display: inline-block;
             font-size: 13px;
             width: 200px;
+            color: black;
         }
 
         /* set the opacity of placeholder */
@@ -93,7 +95,7 @@ function checkVariables()
     if (ssid) 
     {
         document.getElementsByName("ssid")[0].placeholder = ssid;
-        document.getElementsByName("ssid")[0].style.color = "black";
+        document.getElementsByName("password")[0].style.color = "black";
     } 
     else 
     {
