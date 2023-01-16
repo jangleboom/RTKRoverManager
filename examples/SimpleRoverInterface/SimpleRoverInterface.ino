@@ -34,7 +34,8 @@ void setup()
   // (And dont forget to comment this again after one run ;)
   //formatLittleFS();
 
-  //wipeLittleFSFiles();  // Use this for deleting all data
+  // Uncomment for deleting all data without formatting
+  //wipeLittleFSFiles();  
   
   #ifdef DEBUGGING
   listFiles();
@@ -43,7 +44,7 @@ void setup()
   //===============================================================================
   
 
-  setupWiFi(&server);
+  if (!setupWiFi(&server)) DBG.println(F("Wifi setup failed"));
 }
 
 
