@@ -8,12 +8,21 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>RTK rover setup</title>
+    <title>RTK base setup</title>
     <style>
+     :root 
+       {
+            --RUSSIAN_VIOLETT:  #241E4E;
+            --GREEN_COLOR:      #399E5A;
+            --RED_COLOR:        #CE6C47;
+            --GAINSBORO:        #DFDFDF;
+            --TEAL_BLUE:        #40798C;
+        }
+
         body {
-            background-color: #4180C8;
+            background-color: var(--RUSSIAN_VIOLETT);
+            color: var(--GAINSBORO);
             font-family: Lato, Helvetica, Roboto, sans-serif;
-            color: GhostWhite;
             text-align: center;
             border: 1em;
         }
@@ -25,7 +34,7 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 
         progress {
             position: relative;
-            accent-color: #F0A03C;
+            accent-color: var(--GREEN_COLOR);
         }
     </style>
 
@@ -49,7 +58,7 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 
 
 <body>
-    <h2>RTK Rover</h2>
+    <h2>RTK Base Station</h2>
     <p>an error occured - reload form</p>
     <span id="countdown">in 3 second(s)</span> <br>
     <progress value="0" max="3" id="progressBar"> </progress>
