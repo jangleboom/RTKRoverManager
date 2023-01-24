@@ -12,6 +12,8 @@ using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
+void blinkOneTime(int blinkTime, bool shouldNotBlock);
+
 void setup() 
 { 
   //===============================================================================
@@ -20,6 +22,9 @@ void setup()
   while (!Serial) {};
   DBG.println(F("Serial setup done."));
   #endif
+  // Board LED used for error codes (written in README.md)
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
   //===============================================================================
   // Initialize LittleFS
@@ -35,7 +40,7 @@ void setup()
   //formatLittleFS();
 
   // Uncomment for deleting all data without formatting
-  //wipeLittleFSFiles();  
+  // wipeLittleFSFiles();  
   
   #ifdef DEBUGGING
   listFiles();
@@ -44,12 +49,16 @@ void setup()
   //===============================================================================
   
 
-  if (!setupWiFi(&server)) DBG.println(F("Wifi setup failed"));
+  if (!setupWiFi(&server)) 
+  {
+    DBG.println(F("Wifi setup failed, check your credentials"));
+    while (true) blinkOneTime(1000, false);
+  }
 }
 
 
 unsigned long previousMillis = 0;
-const unsigned long RECONNECT_INTERVAL = 30000;
+const unsigned long RECONNECT_INTERVAL = 10000;
 
 void loop() 
 {
@@ -57,11 +66,22 @@ void loop()
   aunit::TestRunner::run();
   #endif
 
+  static bool isConnected = false;
+
   unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
   if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
   {
-    RTKRoverManager::checkConnectionToWifiStation();
+    isConnected = RTKRoverManager::checkConnectionToWifiStation();
+    if (! isConnected) blinkOneTime(1000, false);
     previousMillis = currentMillis;
   }
+}
+
+void blinkOneTime(int blinkTime, bool shouldNotBlock)
+{
+  digitalWrite(LED_BUILTIN, HIGH);
+  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  digitalWrite(LED_BUILTIN, LOW);
+  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
 }
