@@ -14,6 +14,7 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
 
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
   WiFi.begin(ssid, password);
 
   if (WiFi.waitForConnectResult() != WL_CONNECTED) 
@@ -53,7 +54,9 @@ bool RTKRoverManager::checkConnectionToWifiStation()
     } 
     else 
     {
-      DBG.println(F("WiFi connected."));
+      DBG.print(F("WiFi connected: "));
+      DBG.println(WiFi.SSID());
+      DBG.println(WiFi.localIP());
       isConnectedToStation = true;
     }
   }
@@ -66,6 +69,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
     DBG.println(WiFi.softAPIP());
     DBG.print(F("AP Password: "));
     DBG.println(AP_PASSWORD);
+    isConnectedToStation = false;
   }
 
   return isConnectedToStation;
