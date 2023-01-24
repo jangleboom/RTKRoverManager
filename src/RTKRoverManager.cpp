@@ -13,11 +13,10 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   bool success = false;
 
   WiFi.disconnect();
-  // WiFi.mode(WIFI_STA);
-  // WiFi.setAutoReconnect(true);
-  // WiFi.begin(ssid, password);
-  // WiFi.waitForConnectResult();
-  WiFi.reconnect();
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
+  WiFi.begin(ssid, password);
+  WiFi.waitForConnectResult();
   // if (WiFi.waitForConnectResult() != WL_CONNECTED) 
   if ( ! WiFi.isConnected() )
   {
@@ -54,7 +53,9 @@ bool RTKRoverManager::checkConnectionToWifiStation()
       DBG.println(F("Reconnecting to access point..."));
       DBG.print(F("SSID: "));
       DBG.println(ssid.c_str());
-      isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+      WiFi.reconnect();//setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+      WiFi.waitForConnectResult();
+      isConnectedToStation = WiFi.isConnected();
     } 
     else 
     {
