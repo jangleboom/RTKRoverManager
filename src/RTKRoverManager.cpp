@@ -48,7 +48,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
       String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
       String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
       String deviceName = getDeviceName(DEVICE_TYPE);
-      DBG.println(F("Reconnecting to access point."));
+      DBG.println(F("Reconnecting to access point..."));
       isConnectedToStation = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
     } 
     else 
