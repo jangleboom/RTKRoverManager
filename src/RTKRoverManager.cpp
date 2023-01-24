@@ -16,8 +16,9 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
   WiFi.begin(ssid, password);
-
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) 
+  WiFi.waitForConnectResult();
+  // if (WiFi.waitForConnectResult() != WL_CONNECTED) 
+  if ( ! WiFi.isConnected() )
   {
     DBG.println("WiFi Failed! Try to decrease the distance to the AP or check your PW!");
     success = false;
