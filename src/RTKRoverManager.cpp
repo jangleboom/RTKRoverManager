@@ -61,7 +61,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
   if (WiFi.getMode() == WIFI_MODE_AP)
   {
     DBG.print(F("Access point started: "));
-    DBG.println(apSsid);
+    DBG.println(WiFi.getHostname());
     DBG.print(F("AP IP address: "));
     DBG.println(WiFi.softAPIP());
     DBG.print(F("AP Password: "));
