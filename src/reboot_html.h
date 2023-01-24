@@ -54,9 +54,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
     <h2>RTK Rover</h2>
     <h3>setup done</h3>
     <br>
-    device will restart<br>
-    and connect to <br>
-    SSID: %next_ssid%<br>
+    device will restart now and try to connect to SSID: %next_ssid%
     <br>
     <br>
     <progress value="0" max="5" id="progressBar"> </progress><br>
