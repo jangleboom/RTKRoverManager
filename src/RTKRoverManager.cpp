@@ -74,7 +74,6 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(WiFi.softAPIP());
   DBG.print(F("AP Password: "));
   DBG.println(AP_PASSWORD);
-
 }
 
 bool RTKRoverManager::setupWiFi(AsyncWebServer* server)
