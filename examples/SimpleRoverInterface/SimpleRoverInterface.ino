@@ -35,7 +35,7 @@ void setup()
   //formatLittleFS();
 
   // Uncomment for deleting all data without formatting
-  //wipeLittleFSFiles();  
+  // wipeLittleFSFiles();  
   
   #ifdef DEBUGGING
   listFiles();
@@ -44,12 +44,16 @@ void setup()
   //===============================================================================
   
 
-  if (!setupWiFi(&server)) DBG.println(F("Wifi setup failed"));
+  if (!setupWiFi(&server)) 
+  {
+    DBG.println(F("Wifi setup failed, check your credentials"));
+    while (true) {};
+  }
 }
 
 
 unsigned long previousMillis = 0;
-const unsigned long RECONNECT_INTERVAL = 30000;
+const unsigned long RECONNECT_INTERVAL = 10000;
 
 void loop() 
 {

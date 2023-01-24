@@ -44,8 +44,12 @@ bool RTKRoverManager::checkConnectionToWifiStation()
   {
     if (WiFi.status() != WL_CONNECTED) 
     {
+      // Check if we have credentials for a available network
+      String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+      String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+      String deviceName = getDeviceName(DEVICE_TYPE);
       DBG.println(F("Reconnecting to access point."));
-      isConnectedToStation = WiFi.reconnect();
+      isConnectedToStation = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
     } 
     else 
     {
