@@ -13,10 +13,11 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   bool success = false;
 
   WiFi.disconnect();
-  WiFi.mode(WIFI_STA);
-  WiFi.setAutoReconnect(true);
-  WiFi.begin(ssid, password);
-  WiFi.waitForConnectResult();
+  // WiFi.mode(WIFI_STA);
+  // WiFi.setAutoReconnect(true);
+  // WiFi.begin(ssid, password);
+  // WiFi.waitForConnectResult();
+  WiFi.reconnect();
   // if (WiFi.waitForConnectResult() != WL_CONNECTED) 
   if ( ! WiFi.isConnected() )
   {
