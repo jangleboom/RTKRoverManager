@@ -44,7 +44,9 @@ bool RTKRoverManager::checkConnectionToWifiStation()
 
   if (WiFi.getMode() == WIFI_MODE_STA)
   {
-    if (WiFi.status() != WL_CONNECTED) 
+    isConnectedToStation = WiFi.isConnected();
+    // if (WiFi.status() != WL_CONNECTED) 
+    if ( ! isConnectedToStation) 
     {
       // Check if we have credentials for a available network
       String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
@@ -55,14 +57,13 @@ bool RTKRoverManager::checkConnectionToWifiStation()
       DBG.println(ssid.c_str());
       setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
       WiFi.waitForConnectResult();
-      isConnectedToStation = WiFi.isConnected();
+      
     } 
     else 
     {
       DBG.print(F("WiFi connected: "));
       DBG.println(WiFi.SSID());
       DBG.println(WiFi.localIP());
-      isConnectedToStation = true;
     }
   }
 
