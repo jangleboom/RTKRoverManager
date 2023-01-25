@@ -53,7 +53,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
       DBG.println(F("Reconnecting to access point..."));
       DBG.print(F("SSID: "));
       DBG.println(ssid.c_str());
-      WiFi.reconnect();//setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+      setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
       WiFi.waitForConnectResult();
       isConnectedToStation = WiFi.isConnected();
     } 
