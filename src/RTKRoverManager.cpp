@@ -8,16 +8,71 @@
 
 #pragma region: WIFI
 
+bool RTKRoverManager::setupWiFi(AsyncWebServer* server)
+{
+  bool success = false;
+
+  String deviceName = getDeviceName(DEVICE_TYPE);
+  
+  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
+  WiFi.disconnect(true);       // STA sollte noch verbunden sein
+  WiFi.setHostname(deviceName.c_str());
+  // Check if we have credentials for a available network
+  String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+  String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+
+  if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
+  {
+    setupAPMode(deviceName.c_str(), AP_PASSWORD);
+    delay(500);
+    startServer(server);
+    delay(500);
+    success = true;
+  } 
+  else
+  {
+    while ( !savedNetworkAvailable(lastSSID) ) 
+    {
+      DBG.print(F("Waiting for HotSpot "));
+      DBG.print(lastSSID);
+      DBG.println(F(" to appear..."));
+      vTaskDelay(1000/portTICK_RATE_MS);
+      success = false;
+    }
+
+    success = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
+    if (STATION_SERVER_ENABLED)
+    {
+      if (!MDNS.begin(deviceName.c_str())) 
+      {
+        DBG.println("Error starting mDNS, use local IP instead!");
+      } 
+      else 
+      {
+        DBG.print(F("Starting mDNS, find me under <http://"));
+        DBG.print(deviceName);
+        DBG.println(F(".local>"));
+      }
+      delay(500);
+      startServer(server);
+      delay(500);
+    }
+  }
+
+  return success;
+}
+
 bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
 
+  WiFi.softAPdisconnect(true);
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
   WiFi.begin(ssid, password);
   WiFi.waitForConnectResult();
-  // if (WiFi.waitForConnectResult() != WL_CONNECTED) 
+
   if ( ! WiFi.isConnected() )
   {
     DBG.println("WiFi Failed! Try to decrease the distance to the AP or check your PW!");
@@ -38,36 +93,6 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   return success;
 }
 
-bool RTKRoverManager::checkConnectionToWifiStation() 
-{ 
-  bool isConnectedToStation = WiFi.isConnected();
-
-  if (WiFi.getMode() == WIFI_MODE_STA)
-  {
-    if (! isConnectedToStation) 
-    {
-      // Check if we have credentials for a available network
-      String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-      String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-      String deviceName = getDeviceName(DEVICE_TYPE);
-      DBG.println(F("Reconnecting to access point..."));
-      DBG.print(F("SSID: "));
-      DBG.println(ssid.c_str());
-      setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
-      WiFi.waitForConnectResult();
-      isConnectedToStation = WiFi.isConnected();
-    } 
-    else 
-    {
-      DBG.print(F("WiFi connected: "));
-      DBG.println(WiFi.SSID());
-      DBG.println(WiFi.localIP());
-    }
-  }
-
-  return isConnectedToStation;
-}
-
 void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
@@ -83,60 +108,38 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(AP_PASSWORD);
 }
 
-bool RTKRoverManager::setupWiFi(AsyncWebServer* server)
-{
-  bool success = false;
+bool RTKRoverManager::checkConnectionToWifiStation() 
+{ 
+  bool isConnectedToStation = WiFi.isConnected();
 
-  String deviceName = getDeviceName(DEVICE_TYPE);
-
-  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
-  WiFi.disconnect(true);       // STA sollte noch verbunden sein
-  WiFi.setHostname(deviceName.c_str());
-  // Check if we have credentials for a available network
-  String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-  String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-
-  if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
+  if (WiFi.getMode() == WIFI_MODE_STA)
   {
-    setupAPMode(deviceName.c_str(), AP_PASSWORD);
-    delay(500);
-    startServer(server);
-    delay(500);
-    success = true;
-  } 
-  else
-  {
-    if ( !savedNetworkAvailable(lastSSID) ) 
+    if (! isConnectedToStation) 
     {
-      DBG.print(F("HotSpot '"));
-      DBG.print(lastSSID);
-      DBG.println(F("' not found."));
-      success = false;
-    }
+      // Check if we have credentials for a available network
+      String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+      String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+      String deviceName = getDeviceName(DEVICE_TYPE);
+
+      if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
+      {
+        DBG.println("Try reconnect to access point.");
+        isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+        DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
+      }
+    } 
     else 
     {
-      setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
-      if (STATION_SERVER_ENABLED)
-      {
-        if (!MDNS.begin(deviceName.c_str())) 
-        {
-          DBG.println("Error starting mDNS, use local IP instead!");
-        } 
-        else 
-        {
-          DBG.print(F("Starting mDNS, find me under <http://"));
-          DBG.print(deviceName);
-          DBG.println(F(".local>"));
-        }
-        delay(500);
-        startServer(server);
-        delay(500);
-      }
-      success = true;
+      DBG.print(F("WiFi connected to SSID: "));
+      DBG.println(WiFi.SSID());
+      DBG.print(F("WiFi client name: "));
+      DBG.println(WiFi.getHostname());
+      DBG.print(F("IP Address: "));
+      DBG.println(WiFi.localIP());
     }
   }
 
-  return success;
+  return isConnectedToStation;
 }
 
 bool RTKRoverManager::savedNetworkAvailable(const String& ssid) 
@@ -146,6 +149,7 @@ bool RTKRoverManager::savedNetworkAvailable(const String& ssid)
   uint8_t nNetworks = (uint8_t) WiFi.scanNetworks();
   DBG.print(nNetworks);  
   DBG.println(F(" networks found."));
+
   for (uint8_t i=0; i<nNetworks; i++) 
   {
     if (ssid.equals(String(WiFi.SSID(i)))) 

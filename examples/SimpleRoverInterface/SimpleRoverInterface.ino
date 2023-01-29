@@ -12,7 +12,7 @@ using namespace RTKRoverManager;
 AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
-void blinkOneTime(int blinkTime, bool shouldNotBlock);
+void blinkOneTime(int blinkTime, bool doNotBlock);
 
 void setup() 
 { 
@@ -101,10 +101,10 @@ void loop()
   }
 }
 
-void blinkOneTime(int blinkTime, bool shouldNotBlock)
+void blinkOneTime(int blinkTime, bool doNotBlock)
 {
   digitalWrite(LED_BUILTIN, HIGH);
-  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  doNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
   digitalWrite(LED_BUILTIN, LOW);
-  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  doNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
 }
