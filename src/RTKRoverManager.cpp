@@ -38,56 +38,13 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
   return success;
 }
 
-// bool RTKRoverManager::checkConnectionToWifiStation() 
-// { 
-//   bool isConnectedToStation = false;
-
-//   if (WiFi.getMode() == WIFI_MODE_STA)
-//   {
-//     isConnectedToStation = WiFi.isConnected();
-//     // if (WiFi.status() != WL_CONNECTED) 
-//     if ( ! isConnectedToStation) 
-//     {
-//       // Check if we have credentials for a available network
-//       String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-//       String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-//       String deviceName = getDeviceName(DEVICE_TYPE);
-//       DBG.println(F("Reconnecting to access point..."));
-//       DBG.print(F("SSID: "));
-//       DBG.println(ssid.c_str());
-//       setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
-//       WiFi.waitForConnectResult();
-      
-//     } 
-//     else 
-//     {
-//       DBG.print(F("WiFi connected: "));
-//       DBG.println(WiFi.SSID());
-//       DBG.println(WiFi.localIP());
-//     }
-//    }
-
-//   if (WiFi.getMode() == WIFI_MODE_AP)
-//   {
-//     DBG.print(F("Access point started: "));
-//     DBG.println(WiFi.getHostname());
-//     DBG.print(F("AP IP address: "));
-//     DBG.println(WiFi.softAPIP());
-//     DBG.print(F("AP Password: "));
-//     DBG.println(AP_PASSWORD);
-//     isConnectedToStation = false;
-//   }
-
-//   return isConnectedToStation;
-// }
-
 bool RTKRoverManager::checkConnectionToWifiStation() 
 { 
-  bool isConnectedToStation = false;
+  bool isConnectedToStation = WiFi.isConnected();
 
   if (WiFi.getMode() == WIFI_MODE_STA)
   {
-    if (! WiFi.isConnected()) 
+    if (! isConnectedToStation) 
     {
       // Check if we have credentials for a available network
       String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
@@ -105,19 +62,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
       DBG.print(F("WiFi connected: "));
       DBG.println(WiFi.SSID());
       DBG.println(WiFi.localIP());
-      isConnectedToStation = true;
     }
-  }
-
-  if (WiFi.getMode() == WIFI_MODE_AP)
-  {
-    DBG.print(F("Access point started: "));
-    DBG.println(WiFi.getHostname());
-    DBG.print(F("AP IP address: "));
-    DBG.println(WiFi.softAPIP());
-    DBG.print(F("AP Password: "));
-    DBG.println(AP_PASSWORD);
-    isConnectedToStation = false;
   }
 
   return isConnectedToStation;

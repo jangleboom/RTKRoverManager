@@ -49,11 +49,34 @@ void setup()
   //===============================================================================
   
 
-  if (!setupWiFi(&server)) 
+ //===============================================================================
+  // Wifi setup AP or STATION, depending on data in LittleFS
+  setupWiFi(&server);
+  delay(1000);
+
+  while (WiFi.getMode() == WIFI_AP) 
   {
-    DBG.println(F("Wifi setup failed, check your credentials"));
-    while (true) blinkOneTime(1000, false);
+    DBG.println(F("Enter Wifi credentials on webform:"));
+    DBG.print(F("Connect your computer to SSID: "));
+    DBG.println(WiFi.getHostname());
+    DBG.print(F("Go with your Browser to IP: "));
+    DBG.println(WiFi.softAPIP());
+    blinkOneTime(1000, false);
+    blinkOneTime(100, false);
   }
+  if (WiFi.getMode() == WIFI_STA) 
+  {
+    while (! WiFi.isConnected())
+    {
+      DBG.println(F("setup(): Try reconnect to WiFi station"));
+      WiFi.reconnect();
+      DBG.printf("WiFi state: %s", WiFi.isConnected() ? "connected" : "disconnected");
+      blinkOneTime(1000, false);
+      blinkOneTime(100, false);
+    }
+  }
+//===============================================================================
+  
 }
 
 
